@@ -1,0 +1,2124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java Developer Project Checklist — Beginner to Middle</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfbfc;
+    --text:#16181d; --muted:#697386; --border:#e4e7ec;
+    --accent:#f89820; --accent-2:#5382a1; --done:#15a34a;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px -12px rgba(16,24,40,.25);
+    --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  [data-theme="dark"]{
+    --bg:#0e1014; --surface:#161a21; --surface-2:#1b2029;
+    --text:#e9ecf1; --muted:#98a2b3; --border:#262c37;
+    --accent:#f89820; --accent-2:#7fb2e0; --done:#4ade80;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;}
+
+  /* ---------- Sticky header ---------- */
+  .topbar{position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);}
+  .topbar-inner{max-width:1000px; margin:0 auto; padding:12px 20px 10px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;}
+  .brand{font-weight:700; font-size:15px; letter-spacing:-.01em;
+    display:flex; align-items:center; gap:9px; margin-right:auto;}
+  .brand .dot{width:11px; height:11px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));}
+  .brand small{color:var(--muted); font-weight:500; display:block; font-size:12px; line-height:1.2}
+
+  .bar-wrap{display:flex; align-items:center; gap:10px; min-width:200px; flex:1 1 200px; max-width:340px}
+  .bar{flex:1; height:8px; background:var(--border); border-radius:99px; overflow:hidden;}
+  .bar > i{display:block; height:100%; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    border-radius:99px; transition:width .3s ease;}
+  .bar-label{font-family:var(--mono); font-size:12px; color:var(--muted);
+    white-space:nowrap; font-variant-numeric:tabular-nums;}
+
+  .btn{appearance:none; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:13px; font-weight:600;
+    padding:7px 13px; border-radius:9px; cursor:pointer;
+    transition:background .15s, border-color .15s, transform .08s;}
+  .btn:hover{background:var(--surface-2); border-color:var(--accent-2)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent}
+
+  /* ---------- Home link ---------- */
+  .home-link{text-decoration:none; display:inline-flex; align-items:center; gap:4px;
+    color:var(--text);
+    transition:color .15s, background .15s, border-color .15s, transform .08s;}
+  .home-link:hover{color:var(--text); background:var(--surface-2); border-color:var(--accent-2)}
+  .home-link:active{transform:translateY(1px)}
+  @media print{.home-link{display:none !important}}
+
+  /* ---------- Filter bar ---------- */
+  .filters{max-width:1000px; margin:0 auto; padding:0 20px 12px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border);}
+  .filter-group{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .filter-label{font-size:11px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin-right:2px;}
+  .chip{appearance:none; font:inherit; font-size:12.5px; font-weight:600;
+    padding:5px 11px; border-radius:99px; cursor:pointer;
+    border:1px solid var(--border); background:var(--surface); color:var(--text);
+    transition:background .15s, border-color .15s, color .15s, opacity .15s;}
+  .chip:hover{border-color:var(--accent-2)}
+  .chip.active{background:var(--accent-2); color:#fff; border-color:var(--accent-2);}
+  [data-theme="dark"] .chip.active{color:#0e1014}
+  .tier-chip{font-family:var(--mono); font-size:11px; font-weight:700;
+    padding:4px 8px; min-width:30px; text-align:center;}
+  .tier-chip:not(.on){opacity:.35; text-decoration:line-through}
+  .chip.reset{background:transparent; border-style:dashed; color:var(--muted);
+    padding:4px 10px; font-size:11px;}
+
+  /* Search input */
+  .search-wrap{position:relative; flex:1 1 220px; min-width:180px; max-width:340px}
+  .search-wrap input{width:100%; appearance:none;
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:13px;
+    padding:7px 30px 7px 11px; border-radius:9px;
+    transition:border-color .15s, box-shadow .15s;}
+  .search-wrap input:focus{outline:none; border-color:var(--accent-2);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-2) 15%, transparent);}
+  .search-clear{position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:22px; height:22px; padding:0; border:none; border-radius:50%;
+    background:transparent; color:var(--muted); cursor:pointer;
+    font-size:15px; line-height:1; display:grid; place-content:center;}
+  .search-clear:hover{background:var(--surface-2); color:var(--text)}
+
+  .filter-status{flex:1 1 100%; font-family:var(--mono); font-size:11.5px;
+    color:var(--muted); margin-top:2px; font-variant-numeric:tabular-nums;}
+  .filter-status.has-filters{color:var(--accent-2)}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1000px; margin:0 auto; padding:40px 20px 100px}
+
+  .hero{margin-bottom:34px}
+  .hero h1{font-size:clamp(28px,4.4vw,40px); line-height:1.15;
+    letter-spacing:-.025em; margin:0 0 14px; font-weight:800;}
+  .hero h1 span{background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero p{color:var(--muted); font-size:17px; margin:0 0 8px; max-width:66ch}
+
+  .howto{background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px 24px; margin:26px 0 40px;
+    box-shadow:var(--shadow);}
+  .howto h2{font-size:13px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--muted); margin:0 0 12px; font-weight:700;}
+  .howto ul{margin:0; padding-left:20px}
+  .howto li{margin:6px 0}
+  .howto b{color:var(--accent-2)}
+  [data-theme="dark"] .howto b{color:var(--accent)}
+  .howto kbd{font-family:var(--mono); font-size:12px;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-bottom-width:2px; padding:1px 6px; border-radius:4px; color:var(--text);}
+
+  /* ---------- Legend ---------- */
+  .legend{display:flex; gap:16px; flex-wrap:wrap; margin:0 0 24px;
+    font-size:13px; color:var(--muted);}
+  .legend span{display:flex; align-items:center; gap:6px}
+  .legend i{width:12px; height:12px; border-radius:3px; display:inline-block;}
+  .lg-fullstack i{background:#2c7a7b}
+  .lg-distributed i{background:#742a2a}
+  .lg-architecture i{background:#6b46c1}
+
+  /* ---------- Tier overview cards ---------- */
+  .tier-overview{margin:0 0 44px}
+  .tier-overview h2{font-size:13px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--muted); margin:0 0 14px; font-weight:700;}
+  .tier-grid{display:grid; gap:10px;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));}
+  .tier-card{
+    appearance:none; text-align:left; font:inherit; cursor:pointer;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:14px 16px;
+    box-shadow:var(--shadow); border-left:4px solid var(--accent-2);
+    transition:border-color .15s, transform .12s, background .15s, box-shadow .15s;
+    color:var(--text); position:relative;
+  }
+  .tier-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 10px rgba(16,24,40,.08), 0 12px 28px -14px rgba(16,24,40,.3);
+  }
+  .tier-card:active{transform:translateY(0)}
+  .tier-card[data-tier="1"]{border-left-color:#2b6cb0}
+  .tier-card[data-tier="2"]{border-left-color:#2c7a7b}
+  .tier-card[data-tier="3"]{border-left-color:#2f855a}
+  .tier-card[data-tier="4"]{border-left-color:#6b46c1}
+  .tier-card[data-tier="5"]{border-left-color:#b83280}
+  .tier-card[data-tier="6"]{border-left-color:#c05621}
+  .tier-card[data-tier="7"]{border-left-color:#9b2c2c}
+  .tier-card[data-tier="8"]{border-left-color:#742a2a}
+  .tier-card[data-tier="9"]{border-left-color:#553c9a}
+  .tier-card[data-tier="10"]{border-left-color:#1a202c}
+  .tier-card[data-tier="11"]{border-left-color:#285e61}
+  .tier-card[data-tier="12"]{border-left-color:#4c1d95}
+  [data-theme="dark"] .tier-card[data-tier="10"]{border-left-color:#a0aec0}
+  .tier-card.selected{
+    background:color-mix(in srgb, var(--accent-2) 12%, var(--surface));
+    border-color:var(--accent-2);
+    box-shadow:0 0 0 1px var(--accent-2), 0 4px 12px -4px rgba(83,130,161,.5);
+  }
+  .tier-card .tc-num{font-family:var(--mono); font-size:10.5px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:5px;}
+  .tier-card h3{margin:0 0 6px; font-size:14px; font-weight:750;
+    letter-spacing:-.012em; line-height:1.3;}
+  .tier-card p{margin:0; font-size:12px; color:var(--muted); line-height:1.5;}
+  .tier-card .tc-pj{display:inline-block; margin-top:8px;
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    color:var(--accent-2); border:1px solid var(--border);
+    background:var(--surface-2);
+    padding:1px 7px; border-radius:5px;}
+
+  /* ---------- Tier section ---------- */
+  .tier{margin-bottom:44px; scroll-margin-top:130px}
+  .tier-head{display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    padding-bottom:12px; margin-bottom:6px;
+    border-bottom:2px solid var(--border);}
+  .tier-badge{font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:#fff; padding:4px 9px; border-radius:6px; align-self:center;}
+  .tier-head h2{font-size:21px; margin:0; letter-spacing:-.015em; font-weight:750; flex:1 1 auto}
+  .tier-count{font-family:var(--mono); font-size:12px; color:var(--muted);
+    font-variant-numeric:tabular-nums; align-self:center;}
+  .tier-note{color:var(--muted); font-size:14.5px; margin:12px 0 18px; max-width:74ch}
+
+  .tier[data-tier="1"]  .tier-badge{background:#2b6cb0}
+  .tier[data-tier="2"]  .tier-badge{background:#2c7a7b}
+  .tier[data-tier="3"]  .tier-badge{background:#2f855a}
+  .tier[data-tier="4"]  .tier-badge{background:#6b46c1}
+  .tier[data-tier="5"]  .tier-badge{background:#b83280}
+  .tier[data-tier="6"]  .tier-badge{background:#c05621}
+  .tier[data-tier="7"]  .tier-badge{background:#9b2c2c}
+  .tier[data-tier="8"]  .tier-badge{background:#742a2a}
+  .tier[data-tier="9"]  .tier-badge{background:#553c9a}
+  .tier[data-tier="10"] .tier-badge{background:#1a202c}
+  .tier[data-tier="11"] .tier-badge{background:#285e61}
+  .tier[data-tier="12"] .tier-badge{background:#4c1d95}
+  [data-theme="dark"] .tier[data-tier="10"] .tier-badge{background:#4a5568}
+
+  /* ---------- Project card ---------- */
+  .project{background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px 18px 16px 16px;
+    margin-bottom:10px; box-shadow:var(--shadow);
+    display:grid; grid-template-columns:auto 1fr; gap:0 14px;
+    transition:border-color .18s, background .18s, opacity .18s;}
+  .project:hover{border-color:color-mix(in srgb,var(--accent-2) 55%, var(--border))}
+
+  .project label{display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding-top:2px;}
+  .project input[type="checkbox"]{appearance:none; -webkit-appearance:none;
+    width:22px; height:22px; margin:0; cursor:pointer;
+    border:2px solid var(--border); border-radius:6px;
+    background:var(--surface-2); display:grid; place-content:center;
+    transition:background .15s, border-color .15s; flex:none;}
+  .project input[type="checkbox"]:hover{border-color:var(--accent-2)}
+  .project input[type="checkbox"]::after{content:""; width:11px; height:6px;
+    border-left:2.5px solid #fff; border-bottom:2.5px solid #fff;
+    transform:rotate(-45deg) translate(1px,-1px) scale(0);
+    transition:transform .15s ease;}
+  .project input[type="checkbox"]:checked{background:var(--done); border-color:var(--done)}
+  .project input[type="checkbox"]:checked::after{transform:rotate(-45deg) translate(1px,-1px) scale(1)}
+  .project input[type="checkbox"]:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px}
+
+  .project-body{min-width:0}
+  .project-title{display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+    margin:0 0 6px;}
+  .num{font-family:var(--mono); font-size:12px; font-weight:700;
+    color:var(--muted); background:var(--surface-2);
+    border:1px solid var(--border); padding:1px 7px; border-radius:5px;
+    flex:none; font-variant-numeric:tabular-nums;}
+  .project-title h3{margin:0; font-size:16.5px; font-weight:700; letter-spacing:-.01em;
+    transition:color .15s;}
+  .track-tag{font-family:var(--mono); font-size:10px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.06em;
+    padding:2px 6px; border-radius:4px; color:var(--muted);
+    border:1px solid var(--border); background:var(--surface-2);}
+  .project p{margin:0 0 7px; font-size:14.5px; color:var(--muted); max-width:76ch}
+  .project p:last-child{margin-bottom:0}
+
+  .teaches{font-size:13.5px !important; color:var(--text) !important;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:8px 12px; display:block;}
+  .teaches .k{font-family:var(--mono); font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.07em;
+    color:var(--accent-2); margin-right:6px;}
+  [data-theme="dark"] .teaches .k{color:var(--accent)}
+
+  /* ---------- Inline clickable project title ---------- */
+  .project-link{display:inline-flex; align-items:baseline; gap:9px;
+    text-decoration:none; color:inherit; border-radius:6px;
+    transition:color .15s;}
+  .project-link:hover .num{color:var(--accent-2); border-color:var(--accent-2);
+    background:color-mix(in srgb, var(--accent-2) 10%, var(--surface-2));}
+  .project-link:hover h3{color:var(--accent-2);}
+  [data-theme="dark"] .project-link:hover .num{color:var(--accent);
+    border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 12%, var(--surface-2));}
+  [data-theme="dark"] .project-link:hover h3{color:var(--accent);}
+  .project-link:focus-visible{outline:2px solid var(--accent-2); outline-offset:3px;}
+  .project.done .project-link h3{text-decoration:line-through;
+    text-decoration-color:var(--done); text-decoration-thickness:2px;}
+  .project-link .num,
+  .project-link h3{transition:color .15s, background .15s, border-color .15s;}
+
+  /* Search highlight */
+  mark{background:color-mix(in srgb, var(--accent) 45%, transparent);
+    color:inherit; padding:0 2px; border-radius:3px; font-weight:600;}
+  [data-theme="dark"] mark{background:color-mix(in srgb, var(--accent) 32%, transparent);}
+
+  .project.done{opacity:.62; background:var(--surface-2)}
+  .project.done .project-title h3{text-decoration:line-through;
+    text-decoration-color:var(--done); text-decoration-thickness:2px; color:var(--muted);}
+  .project.done .num{color:var(--done);
+    border-color:color-mix(in srgb,var(--done) 40%, var(--border))}
+
+  /* ---------- Principles / Required block ---------- */
+  .principles{background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 10%, var(--surface)), var(--surface));
+    border:1px solid var(--border); border-radius:var(--radius);
+    padding:22px 24px; margin-bottom:44px; box-shadow:var(--shadow);}
+  .principles h2{margin:0 0 6px; font-size:20px; letter-spacing:-.015em; font-weight:750;}
+  .principles > p.sub{color:var(--muted); font-size:14.5px; margin:0 0 18px}
+  .principles ul{margin:0; padding-left:20px}
+  .principles li{margin:7px 0; font-size:14.5px}
+  .principles li b{color:var(--accent-2)}
+  [data-theme="dark"] .principles li b{color:var(--accent)}
+
+  /* ---------- Empty state ---------- */
+  .empty-state{text-align:center; padding:60px 20px; color:var(--muted);
+    border:2px dashed var(--border); border-radius:var(--radius);}
+  .empty-state strong{display:block; font-size:18px; color:var(--text); margin-bottom:6px}
+  .empty-state button{margin-top:14px}
+
+  /* ---------- Filtered out ---------- */
+  .filtered-out{display:none !important}
+
+  footer{max-width:1000px; margin:0 auto; padding:0 20px 80px;
+    color:var(--muted); font-size:13.5px; text-align:center;}
+
+  .toast{position:fixed; left:50%; bottom:28px; transform:translate(-50%,90px);
+    background:var(--text); color:var(--bg);
+    padding:10px 18px; border-radius:99px; font-size:14px; font-weight:600;
+    opacity:0; pointer-events:none;
+    transition:transform .28s ease, opacity .28s ease; z-index:100;
+    max-width:calc(100vw - 40px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .toast.show{transform:translate(-50%,0); opacity:1}
+
+  /* ---------- Print ---------- */
+  @media print{
+    :root{--bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb; --shadow:none;}
+    [data-theme="dark"]{--bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb;}
+    body{font-size:11pt; background:#fff}
+    .topbar, .toast, .no-print, .filters, .legend, .tier-overview{display:none !important}
+    main{max-width:none; padding:0}
+    .project{break-inside:avoid; page-break-inside:avoid;
+      box-shadow:none; border-color:#ccc; padding:8px 10px; margin-bottom:6px;}
+    .tier{break-inside:auto; margin-bottom:20px}
+    .tier-head{break-after:avoid; page-break-after:avoid}
+    .project.done{opacity:1}
+    .project input[type="checkbox"]{border-color:#333; background:#fff;
+      print-color-adjust:exact; -webkit-print-color-adjust:exact;}
+    .project input[type="checkbox"]:checked{background:#333; border-color:#333}
+    .howto, .principles{box-shadow:none; border-color:#ccc}
+    .teaches{background:#fafafa}
+    article.project.filtered-out{display:grid !important}
+    section.tier.filtered-out{display:block !important}
+    .empty-state{display:none !important}
+    mark{background:transparent !important; padding:0 !important; font-weight:inherit !important}
+  }
+
+  @media (max-width:560px){
+    .topbar-inner{padding:10px 14px; gap:10px}
+    .brand small{display:none}
+    .filters{padding:0 14px 10px; gap:8px}
+    .filter-group{gap:4px}
+    .chip{font-size:11.5px; padding:4px 9px}
+    .search-wrap{flex-basis:100%; max-width:none}
+    main{padding:26px 14px 80px}
+    .project{padding:13px 14px; gap:0 11px}
+    .hero p{font-size:15.5px}
+    .track-tag{display:none}
+    .tier-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Java Project Checklist<small>Beginner → Middle · 120 projects</small></span>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar" role="progressbar" aria-label="Overall progress"><i id="barFill"></i></div>
+      <span class="bar-label" id="barLabel">0 / 120</span>
+    </div>
+
+    <a class="btn ghost home-link" href="index.html" title="Back to home">← Home</a>
+    <button class="btn ghost no-print" id="themeBtn" title="Toggle theme">🌙 Dark</button>
+    <button class="btn no-print" id="printBtn" title="Print / Save as PDF">⬇ PDF</button>
+    <button class="btn ghost no-print" id="resetBtn" title="Reset all progress">Reset</button>
+  </div>
+
+  <div class="filters no-print">
+    <div class="filter-group">
+      <span class="filter-label">Search</span>
+      <div class="search-wrap">
+        <input type="search" id="searchInput" placeholder="Title, concept, keyword… (press /)" autocomplete="off">
+        <button class="search-clear" id="searchClear" hidden aria-label="Clear search">×</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Track</span>
+      <button class="chip active" data-track="all">All</button>
+      <button class="chip" data-track="fullstack">Full-stack</button>
+      <button class="chip" data-track="distributed">Distributed</button>
+      <button class="chip" data-track="architecture">Architecture</button>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Tiers</span>
+      <button class="tier-chip chip on" data-tier="1">T1</button>
+      <button class="tier-chip chip on" data-tier="2">T2</button>
+      <button class="tier-chip chip on" data-tier="3">T3</button>
+      <button class="tier-chip chip on" data-tier="4">T4</button>
+      <button class="tier-chip chip on" data-tier="5">T5</button>
+      <button class="tier-chip chip on" data-tier="6">T6</button>
+      <button class="tier-chip chip on" data-tier="7">T7</button>
+      <button class="tier-chip chip on" data-tier="8">T8</button>
+      <button class="tier-chip chip on" data-tier="9">T9</button>
+      <button class="tier-chip chip on" data-tier="10">T10</button>
+      <button class="tier-chip chip on" data-tier="11">T11</button>
+      <button class="tier-chip chip on" data-tier="12">T12</button>
+      <button class="chip reset" id="clearFiltersBtn" title="Clear all filters">↺ Clear filters</button>
+    </div>
+
+    <div class="filter-status" id="filterStatus"></div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>A Java Developer's <span>Project Library</span></h1>
+    <p>
+      120 projects, ordered from "hello world" to a deployable, observable, production-shaped system.
+      Every project introduces new concepts while reinforcing the ones before it.
+    </p>
+    <p>
+      Tick a box when you've built it <em>and</em> understood it. Progress is saved in this browser.
+      Use the search and filters above to focus.
+    </p>
+  </section>
+
+  <section class="howto">
+    <h2>How to use this list</h2>
+    <ul>
+      <li><b>Sequential learning.</b> Follow the tiers in order — concepts build on each other.</li>
+      <li><b>Tracks.</b> <b>Full-stack</b> = web/API/Spring depth. <b>Distributed</b> = messaging, resilience, cloud. <b>Architecture</b> = design, DDD, capstone. Foundation tiers (1–6) appear in every track.</li>
+      <li><b>Search &amp; filter.</b> Press <kbd>/</kbd> to focus the search box. Click any tier card below to filter to that tier. Combine chips, tracks and search — they all stack.</li>
+      <li><b>Don't do all 120.</b> After Tier 6, pick <em>one</em> vertical to go deep. Depth beats a shallow sweep.</li>
+      <li><b>Focus on concepts.</b> The goal isn't finishing the project — it's understanding <em>why</em> you chose a pattern, a library, a trade-off.</li>
+      <li><b>Export.</b> Hit <b>⬇ PDF</b> — filters are ignored during print, so you get the full list.</li>
+    </ul>
+  </section>
+
+  <div class="legend no-print">
+    <span class="lg-fullstack"><i></i>Full-stack / Spring</span>
+    <span class="lg-distributed"><i></i>Distributed / Cloud</span>
+    <span class="lg-architecture"><i></i>Architecture / Design</span>
+  </div>
+
+  <!-- ================= TIER OVERVIEW ================= -->
+  <section class="tier-overview no-print">
+    <h2>Browse by tier — click a card to filter</h2>
+    <div class="tier-grid" id="tierGrid">
+      <button class="tier-card" data-tier="1">
+        <div class="tc-num">Tier 1 · P1–P12</div>
+        <h3>The Absolute Basics</h3>
+        <p>Console apps, core syntax, control flow, arrays, the build-run cycle.</p>
+        <span class="tc-pj">P1–P12</span>
+      </button>
+      <button class="tier-card" data-tier="2">
+        <div class="tc-num">Tier 2 · P13–P25</div>
+        <h3>OOP &amp; Core Libraries</h3>
+        <p>Classes, interfaces, enums, collections, exceptions, real design.</p>
+        <span class="tc-pj">P13–P25</span>
+      </button>
+      <button class="tier-card" data-tier="3">
+        <div class="tc-num">Tier 3 · P26–P33</div>
+        <h3>Collections, Streams &amp; Modern Java</h3>
+        <p>HashMap, streams, records, sealed types, pattern matching, generics.</p>
+        <span class="tc-pj">P26–P33</span>
+      </button>
+      <button class="tier-card" data-tier="4">
+        <div class="tc-num">Tier 4 · P34–P43</div>
+        <h3>I/O, Data Structures &amp; Algorithms</h3>
+        <p>Files, NIO, streams over lines, collections internals, Big-O.</p>
+        <span class="tc-pj">P34–P43</span>
+      </button>
+      <button class="tier-card" data-tier="5">
+        <div class="tc-num">Tier 5 · P44–P52</div>
+        <h3>Concurrency &amp; Networking</h3>
+        <p>Threads, executors, sockets, HTTP clients, thread safety, deadlocks.</p>
+        <span class="tc-pj">P44–P52</span>
+      </button>
+      <button class="tier-card" data-tier="6">
+        <div class="tc-num">Tier 6 · P53–P62</div>
+        <h3>Databases, JDBC &amp; JPA</h3>
+        <p>SQL, JDBC, connection pooling, transactions, Hibernate, migrations.</p>
+        <span class="tc-pj">P53–P62</span>
+      </button>
+      <button class="tier-card" data-tier="7">
+        <div class="tc-num">Tier 7 · P63–P77</div>
+        <h3>Spring Boot &amp; Web</h3>
+        <p>REST, Spring MVC, Data JPA, validation, security basics, Thymeleaf.</p>
+        <span class="tc-pj">P63–P77</span>
+      </button>
+      <button class="tier-card" data-tier="8">
+        <div class="tc-num">Tier 8 · P78–P84</div>
+        <h3>Spring Ecosystem Depth</h3>
+        <p>Security, OAuth2, AOP, Batch, async, GraphQL, gRPC.</p>
+        <span class="tc-pj">P78–P84</span>
+      </button>
+      <button class="tier-card" data-tier="9">
+        <div class="tc-num">Tier 9 · P85–P98</div>
+        <h3>Engineering Craft &amp; Quality</h3>
+        <p>Testing, Testcontainers, TDD, multi-module builds, CI/CD, design patterns, hexagonal architecture.</p>
+        <span class="tc-pj">P85–P98</span>
+      </button>
+      <button class="tier-card" data-tier="10">
+        <div class="tc-num">Tier 10 · P99–P108</div>
+        <h3>Messaging &amp; Distributed Systems</h3>
+        <p>Kafka, RabbitMQ, outbox, sagas, idempotency, resilience, caching.</p>
+        <span class="tc-pj">P99–P108</span>
+      </button>
+      <button class="tier-card" data-tier="11">
+        <div class="tc-num">Tier 11 · P109–P116</div>
+        <h3>Cloud, Ops &amp; Performance</h3>
+        <p>Docker, Kubernetes, AWS, observability, profiling, load testing, Nginx.</p>
+        <span class="tc-pj">P109–P116</span>
+      </button>
+      <button class="tier-card" data-tier="12">
+        <div class="tc-num">Tier 12 · P117–P120</div>
+        <h3>Advanced Java &amp; Architecture</h3>
+        <p>WebFlux, virtual threads, Elasticsearch, DDD, capstone system design.</p>
+        <span class="tc-pj">P117–P120</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ================= TIER 1 ================= -->
+  <section class="tier" data-tier="1">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 1</span>
+      <h2>The Absolute Basics</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Console applications only. No external libraries — just core Java, the compiler, and the terminal.</p>
+
+    <article class="project" data-id="p1" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p1" aria-label="Mark project 1 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener" aria-label="Open repository for Hello, World!">
+            <span class="num">01</span><h3>Hello, World!</h3>
+          </a>
+        </div>
+        <p>The classic first program. It isn't about the code — it's about the entire workflow from source file to running process.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>main</code> method, <code>System.out.println</code>, compiling with <code>javac</code>, running with <code>java</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p2" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p2" aria-label="Mark project 2 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">02</span><h3>Simple Calculator</h3>
+          </a>
+        </div>
+        <p>Takes two numbers and an operator (<code>+ − * /</code>) and prints the result. Add a loop so it keeps running until the user quits.</p>
+        <p class="teaches"><span class="k">Concepts</span>Variables, primitive types (<code>int</code>, <code>double</code>), <code>Scanner</code> for input, <code>switch</code> statements, arithmetic, handling division by zero.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p3" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p3" aria-label="Mark project 3 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">03</span><h3>Number Guessing Game</h3>
+          </a>
+        </div>
+        <p>The computer picks a random number; the user guesses and gets "higher" / "lower" hints until they find it. Count the attempts.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>while</code> loops, <code>if-else</code> conditionals, the <code>Random</code> class, input validation.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p4" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p4" aria-label="Mark project 4 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">04</span><h3>FizzBuzz</h3>
+          </a>
+        </div>
+        <p>Print 1–100. Multiples of 3 print "Fizz", multiples of 5 print "Buzz", multiples of both print "FizzBuzz". Then do it without any <code>if</code> statement.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>for</code> loops, the modulo operator <code>%</code>, conditional logic, thinking about alternative solutions.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p5" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p5" aria-label="Mark project 5 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">05</span><h3>To-Do List (In-Memory)</h3>
+          </a>
+        </div>
+        <p>A menu-driven console app to add, view, and remove tasks held in an <code>ArrayList&lt;String&gt;</code>. The list is lost on exit — that's intentional for now.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>ArrayList</code>, a <code>switch</code>-based menu loop, extracting logic into methods, basic CRUD.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p6" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p6" aria-label="Mark project 6 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">06</span><h3>Palindrome Checker</h3>
+          </a>
+        </div>
+        <p>Check whether a word or phrase reads the same forwards and backwards — ignoring spaces, punctuation, and case.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>String</code> manipulation (<code>replaceAll</code>, <code>toLowerCase</code>), <code>StringBuilder.reverse()</code>, character comparison, two-pointer technique.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p7" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p7" aria-label="Mark project 7 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">07</span><h3>Unit Converter</h3>
+          </a>
+        </div>
+        <p>Convert between km/miles, kg/pounds, Celsius/Fahrenheit. Menu-driven, with sensible rounding in the output.</p>
+        <p class="teaches"><span class="k">Concepts</span>Primitive types, arithmetic, casting, precision issues with <code>double</code>, formatting with <code>printf</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p8" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p8" aria-label="Mark project 8 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">08</span><h3>Grade Analyzer</h3>
+          </a>
+        </div>
+        <p>Read a list of student grades, compute min/max/average, assign letter grades, and count how many passed.</p>
+        <p class="teaches"><span class="k">Concepts</span>Arrays, <code>if/else</code> chains, min/max/average, basic statistics.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p9" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p9" aria-label="Mark project 9 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">09</span><h3>Multiplication Table &amp; Star Patterns</h3>
+          </a>
+        </div>
+        <p>Print a formatted multiplication table, then draw pyramids, diamonds, and triangles using nested loops.</p>
+        <p class="teaches"><span class="k">Concepts</span>Nested loops, <code>printf</code> formatting, thinking in rows and columns.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p10" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p10" aria-label="Mark project 10 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">10</span><h3>Array Toolkit</h3>
+          </a>
+        </div>
+        <p>A library of static methods: sort, search (linear + binary), reverse, find duplicates, compute stats. Test it from a <code>main</code>.</p>
+        <p class="teaches"><span class="k">Concepts</span>Arrays, in-place algorithms, binary search, algorithmic thinking, writing reusable methods.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p11" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p11" aria-label="Mark project 11 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">11</span><h3>Tic-Tac-Toe (Console)</h3>
+          </a>
+        </div>
+        <p>Two players take turns on a 3×3 board. Detect win, draw, invalid moves, and offer a rematch.</p>
+        <p class="teaches"><span class="k">Concepts</span>2D arrays, game loop, win detection, input validation, separating board rendering from game logic.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p12" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p12" aria-label="Mark project 12 complete"></label>
+      <div class="project-body">
+        <div class="project-title">
+          <a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener">
+            <span class="num">12</span><h3>Console ATM</h3>
+          </a>
+        </div>
+        <p>A simulated ATM: PIN entry, balance check, deposit, withdrawal, mini statement — all inside a loop.</p>
+        <p class="teaches"><span class="k">Concepts</span>Menus with <code>do-while</code>, state, defensive input handling, simulating a persistent session.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 2 ================= -->
+  <section class="tier" data-tier="2">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 2</span>
+      <h2>Object-Oriented Programming &amp; Core Libraries</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Time to stop writing one long <code>main</code> method. Model the world with classes, hide state behind interfaces, and lean on Java's standard library.</p>
+
+    <article class="project" data-id="p13" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p13" aria-label="Mark project 13 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">13</span><h3>Rock, Paper, Scissors</h3></a></div>
+        <p>Player vs. computer, best of three or five rounds. Track a running score across rounds.</p>
+        <p class="teaches"><span class="k">Concepts</span>Enums, a <code>Game</code> class and a <code>Player</code> class, using <code>Random</code> for the opponent.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p14" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p14" aria-label="Mark project 14 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">14</span><h3>Banking System (Console)</h3></a></div>
+        <p>Create accounts, deposit, withdraw, check balance, and transfer money between accounts. Reject invalid operations.</p>
+        <p class="teaches"><span class="k">Concepts</span>Classes &amp; objects, encapsulation, <code>HashMap</code> keyed by account ID, custom exceptions like <code>InsufficientFundsException</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p15" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p15" aria-label="Mark project 15 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">15</span><h3>Student Management System</h3></a></div>
+        <p>Manage students, courses, and enrollments. A student can be enrolled in many courses; a course has many students.</p>
+        <p class="teaches"><span class="k">Concepts</span>Object relationships, <code>List&lt;Course&gt;</code> inside a <code>Student</code>, <code>LocalDate</code>, overriding <code>toString</code> and <code>equals</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p16" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p16" aria-label="Mark project 16 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">16</span><h3>Library Management System</h3></a></div>
+        <p>Add books, register members, lend books, return books. A book is either available or borrowed — never both.</p>
+        <p class="teaches"><span class="k">Concepts</span>Interfaces (<code>Borrowable</code>), polymorphism, modeling state transitions, <code>HashSet</code> for unique members.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p17" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p17" aria-label="Mark project 17 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">17</span><h3>Hangman</h3></a></div>
+        <p>The classic word-guessing game with ASCII gallows, a limited number of wrong guesses, and a letters-already-guessed check.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>char</code> arrays, <code>String</code> vs <code>StringBuilder</code> for the masked word, <code>Set&lt;Character&gt;</code>, game-loop state management.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p18" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p18" aria-label="Mark project 18 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">18</span><h3>Flashcard App (Console)</h3></a></div>
+        <p>Create decks, add question/answer cards, then "study" a deck — shuffling cards and tracking which ones you got wrong.</p>
+        <p class="teaches"><span class="k">Concepts</span>Designing a data model, <code>Map&lt;String, List&lt;Flashcard&gt;&gt;</code>, <code>Collections.shuffle</code>, separating UI from domain logic.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p19" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p19" aria-label="Mark project 19 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">19</span><h3>Shape Hierarchy</h3></a></div>
+        <p>An abstract <code>Shape</code> with <code>Circle</code>, <code>Rectangle</code>, <code>Triangle</code> subclasses. Compute area and perimeter polymorphically.</p>
+        <p class="teaches"><span class="k">Concepts</span>Inheritance, abstract classes, polymorphism, method overriding.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p20" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p20" aria-label="Mark project 20 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">20</span><h3>Zoo / Animals</h3></a></div>
+        <p>Model animals that speak, eat, and move. Define behaviors with interfaces and default methods.</p>
+        <p class="teaches"><span class="k">Concepts</span>Interfaces, default methods, programming to an interface, sound design vs. deep inheritance.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p21" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p21" aria-label="Mark project 21 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">21</span><h3>Vending Machine</h3></a></div>
+        <p>A state machine: idle → has money → dispenses → returns change. Handle sold-out slots gracefully.</p>
+        <p class="teaches"><span class="k">Concepts</span>Enums with behavior, simple state machines, modeling transitions.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p22" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p22" aria-label="Mark project 22 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">22</span><h3>Custom Exceptions Toolkit</h3></a></div>
+        <p>Build a small library of domain exceptions (<code>ValidationException</code>, <code>NotFoundException</code>, <code>BusinessRuleException</code>) with context.</p>
+        <p class="teaches"><span class="k">Concepts</span>Checked vs unchecked, exception hierarchy, try-with-resources, error context vs. message strings.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p23" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p23" aria-label="Mark project 23 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">23</span><h3>Inventory System</h3></a></div>
+        <p>Products with SKUs, stock levels, reorder thresholds. Search, sort, and compare products.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>equals</code>/<code>hashCode</code>/<code>toString</code> contracts, <code>Comparable</code> vs <code>Comparator</code>, <code>HashMap</code>, sorting.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p24" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p24" aria-label="Mark project 24 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">24</span><h3>Parking Lot Model</h3></a></div>
+        <p>Model a lot with floors, spots, vehicles, tickets, and fees. Design it with SOLID in mind.</p>
+        <p class="teaches"><span class="k">Concepts</span>OOP design, composition over inheritance, SOLID intro, thinking before coding.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p25" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p25" aria-label="Mark project 25 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">25</span><h3>Text RPG Battle</h3></a></div>
+        <p>A hero vs. monsters with turn-based combat, different attack strategies, and status effects.</p>
+        <p class="teaches"><span class="k">Concepts</span>Strategy-style composition, randomness, game state, avoiding giant if-else chains.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 3 ================= -->
+  <section class="tier" data-tier="3">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 3</span>
+      <h2>Collections, Streams &amp; Modern Java</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Where Java stops feeling like a scripting language. Collections, streams, records, sealed types, and pattern matching.</p>
+
+    <article class="project" data-id="p26" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p26" aria-label="Mark project 26 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">26</span><h3>Word Frequency Counter</h3></a></div>
+        <p>Read a full book from Project Gutenberg, count every word, and print the top 10 most frequent — excluding stop words.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>HashMap&lt;String, Integer&gt;</code>, <code>merge()</code> and <code>computeIfAbsent()</code>, sorting by value, regular expressions.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p27" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p27" aria-label="Mark project 27 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">27</span><h3>Contact Book (TreeMap)</h3></a></div>
+        <p>A contact book keyed by name, sorted alphabetically, supporting tags and multi-value fields.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>TreeMap</code>, <code>Comparator</code> chains, <code>Set</code> vs <code>List</code>, sorting semantics.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p28" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p28" aria-label="Mark project 28 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">28</span><h3>Employee Stream Playground</h3></a></div>
+        <p>Given a list of employees, answer questions with streams: top earners per department, average salary, grouping, partitioning.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>filter</code>/<code>map</code>/<code>reduce</code>, <code>groupingBy</code>, <code>partitioningBy</code>, <code>flatMap</code>, <code>Collectors</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p29" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p29" aria-label="Mark project 29 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">29</span><h3>Optional-Safe Lookup Service</h3></a></div>
+        <p>A lookup service that never returns null. Chain fallbacks, map, and throw domain exceptions.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>Optional</code> done right, avoiding null, <code>or</code>/<code>orElse</code>/<code>orElseThrow</code>, when Optional hurts readability.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p30" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p30" aria-label="Mark project 30 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">30</span><h3>Generic Utility Library</h3></a></div>
+        <p>Generic <code>Pair</code>, <code>Triple</code>, <code>Box</code>, <code>Result</code>, and utility methods with bounded types and wildcards.</p>
+        <p class="teaches"><span class="k">Concepts</span>Bounded types, wildcards, PECS rule, generics design.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p31" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p31" aria-label="Mark project 31 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">31</span><h3>Immutable Money / Value Objects</h3></a></div>
+        <p>An immutable <code>Money</code> class with currency, arithmetic, comparison, and proper <code>equals</code>/<code>hashCode</code>.</p>
+        <p class="teaches"><span class="k">Concepts</span>Immutability, <code>BigDecimal</code> pitfalls, defensive copies, value objects, rounding.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p32" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p32" aria-label="Mark project 32 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">32</span><h3>Shapes with Records &amp; Sealed Types</h3></a></div>
+        <p>Redo the Shape hierarchy using records and sealed interfaces with pattern matching.</p>
+        <p class="teaches"><span class="k">Concepts</span>Java 17–21 records, sealed interfaces, exhaustive switch, modern Java idioms.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p33" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p33" aria-label="Mark project 33 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">33</span><h3>Pattern-Matching Rule Engine</h3></a></div>
+        <p>A small rules engine using switch patterns, record patterns, and instanceof patterns.</p>
+        <p class="teaches"><span class="k">Concepts</span>Switch patterns, record patterns, instanceof patterns, expression-oriented design.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 4 ================= -->
+  <section class="tier" data-tier="4">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 4</span>
+      <h2>File I/O, Data Structures &amp; Algorithms</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Make your programs remember things, and start caring about how fast they run.</p>
+
+    <article class="project" data-id="p34" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p34" aria-label="Mark project 34 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">34</span><h3>Persistent To-Do List</h3></a></div>
+        <p>Take project 05 and make it save tasks to <code>tasks.txt</code> (or CSV) on exit and reload them on start.</p>
+        <p class="teaches"><span class="k">Concepts</span>The <code>java.io</code> package, <code>BufferedReader</code> / <code>BufferedWriter</code>, try-with-resources, parsing and escaping your own format.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p35" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p35" aria-label="Mark project 35 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">35</span><h3>CSV &amp; JSON Parser</h3></a></div>
+        <p>Read a CSV file and print it as an aligned table. Then do the same for a simple JSON file — first by hand, then with a library.</p>
+        <p class="teaches"><span class="k">Concepts</span>String splitting, the <code>java.nio.file</code> API, adding your first dependency with Maven or Gradle (Gson / Jackson).</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p36" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p36" aria-label="Mark project 36 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">36</span><h3>Contact Manager (Persistent)</h3></a></div>
+        <p>A contact book that survives restarts, supports search by partial name, and can export to CSV.</p>
+        <p class="teaches"><span class="k">Concepts</span>Combining OOP with file I/O, manual serialization pain, filtering with <code>Predicate</code> and the Stream API.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p37" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p37" aria-label="Mark project 37 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">37</span><h3>Log File Analyzer</h3></a></div>
+        <p>Parse a server log, count status codes, find slowest requests, and produce a summary report.</p>
+        <p class="teaches"><span class="k">Concepts</span>Regex, <code>Files.lines</code>, streams over lines, aggregation, simple reporting.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p38" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p38" aria-label="Mark project 38 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">38</span><h3>Folder Backup / Sync Tool</h3></a></div>
+        <p>Copy a folder tree to a target, skipping unchanged files, with a dry-run mode.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>walkFileTree</code>, hashing, copy semantics, resume logic, safe file handling.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p39" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p39" aria-label="Mark project 39 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">39</span><h3>Birthday &amp; Deadline Reminder</h3></a></div>
+        <p>Track birthdays and deadlines, and print what's coming up in the next N days.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>java.time</code>, <code>Period</code>/<code>Duration</code>, time zones, formatting, sorting by date.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p40" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p40" aria-label="Mark project 40 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">40</span><h3>Implement a Stack and a Queue</h3></a></div>
+        <p>Build <code>MyStack</code> and <code>MyQueue</code> from scratch — once backed by a resizing array, once by a linked list.</p>
+        <p class="teaches"><span class="k">Concepts</span>Data structures from the inside, array resizing and amortized cost, linked nodes, generics, LIFO vs FIFO, Big-O reasoning.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p41" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p41" aria-label="Mark project 41 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">41</span><h3>Sorting Algorithms</h3></a></div>
+        <p>Implement bubble sort, insertion sort, and merge sort. Benchmark them on arrays of 10, 1 000, and 100 000 random integers.</p>
+        <p class="teaches"><span class="k">Concepts</span>Algorithmic thinking, Big-O in practice, recursion, <code>System.nanoTime()</code> benchmarking, why <code>Arrays.sort</code> wins.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p42" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p42" aria-label="Mark project 42 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">42</span><h3>LRU Cache</h3></a></div>
+        <p>Implement a fixed-capacity Least Recently Used cache with O(1) get and put.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>LinkedHashMap</code> with <code>accessOrder</code>, doubly-linked list + <code>HashMap</code>, eviction, complexity reasoning.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p43" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p43" aria-label="Mark project 43 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">43</span><h3>Expression Evaluator</h3></a></div>
+        <p>Evaluate arithmetic expressions like <code>3 + 4 * (2 - 1)</code> with correct operator precedence.</p>
+        <p class="teaches"><span class="k">Concepts</span>Stacks, shunting-yard algorithm, parsing, operator precedence.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 5 ================= -->
+  <section class="tier" data-tier="5">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 5</span>
+      <h2>Concurrency &amp; Networking</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Programs that do more than one thing at a time, and programs that talk to other programs.</p>
+
+    <article class="project" data-id="p44" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p44" aria-label="Mark project 44 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">44</span><h3>Multi-threaded File Downloader</h3></a></div>
+        <p>Given a list of URLs, download them all concurrently and report how long each took. Compare against a single-threaded run.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>Runnable</code> / <code>Callable</code>, <code>ExecutorService</code> and thread pools, <code>Future</code>, <code>java.net.http.HttpClient</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p45" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p45" aria-label="Mark project 45 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">45</span><h3>Producer–Consumer</h3></a></div>
+        <p>One thread generates items into a bounded buffer, another consumes them. Implement twice: with <code>wait/notifyAll</code>, then with <code>BlockingQueue</code>.</p>
+        <p class="teaches"><span class="k">Concepts</span>Thread safety, shared mutable state, <code>synchronized</code>, <code>BlockingQueue</code>, and why the second version is shorter.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p46" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p46" aria-label="Mark project 46 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">46</span><h3>Multi-client Chat (Console)</h3></a></div>
+        <p>A server that accepts many clients; any message a client sends is broadcast to everyone else. Support a <code>/nick</code> command.</p>
+        <p class="teaches"><span class="k">Concepts</span>Sockets (<code>ServerSocket</code>, <code>Socket</code>), TCP basics, blocking I/O, one thread per client, concurrent collections.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p47" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p47" aria-label="Mark project 47 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">47</span><h3>Web Server from Scratch</h3></a></div>
+        <p>Serve a static HTML file (and a 404 page) over raw sockets, then open it in a real browser.</p>
+        <p class="teaches"><span class="k">Concepts</span>HTTP request/response anatomy, status codes, headers, MIME types, path traversal security, deep appreciation for Spring Boot.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p48" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p48" aria-label="Mark project 48 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">48</span><h3>Parallel Counter</h3></a></div>
+        <p>Increment a shared counter from many threads and watch it break — then fix it properly.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>Thread</code>, <code>Runnable</code>, race conditions, <code>synchronized</code>, <code>AtomicInteger</code>.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p49" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p49" aria-label="Mark project 49 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">49</span><h3>Deadlock Lab</h3></a></div>
+        <p>Reproduce a deadlock with two bank transfers, then fix it with lock ordering.</p>
+        <p class="teaches"><span class="k">Concepts</span>Lock ordering, <code>tryLock</code> with timeout, reproducing and diagnosing concurrency bugs.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p50" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p50" aria-label="Mark project 50 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">50</span><h3>Parallel Web Crawler</h3></a></div>
+        <p>Fetch a set of pages concurrently, parse links, and crawl one level deep.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>ExecutorService</code>, <code>Future</code>, <code>CompletableFuture</code> chains, <code>HttpClient</code>, rate limiting, politeness.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p51" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p51" aria-label="Mark project 51 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">51</span><h3>Rate Limiter</h3></a></div>
+        <p>Implement a token bucket rate limiter usable from multiple threads.</p>
+        <p class="teaches"><span class="k">Concepts</span>Token bucket, Atomic classes, <code>ConcurrentHashMap</code>, sliding window vs. token bucket.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p52" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p52" aria-label="Mark project 52 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">52</span><h3>Weather CLI</h3></a></div>
+        <p>A command-line weather client that fetches current weather for a city via a public API.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>java.net.http.HttpClient</code>, JSON parsing, error handling, timeouts, retries, API keys.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 6 ================= -->
+  <section class="tier" data-tier="6">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 6</span>
+      <h2>Databases, JDBC &amp; JPA</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Persistence, from raw SQL to ORM. Learn what the database actually does, why JDBC is painful, and what Hibernate hides.</p>
+
+    <article class="project" data-id="p53" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p53" aria-label="Mark project 53 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">53</span><h3>To-Do List with JDBC</h3></a></div>
+        <p>Rebuild the To-Do list against a real SQL database — H2 or SQLite to start, PostgreSQL later.</p>
+        <p class="teaches"><span class="k">Concepts</span>SQL (<code>CREATE</code>, <code>INSERT</code>, <code>SELECT</code>, <code>UPDATE</code>, <code>DELETE</code>), JDBC, <code>PreparedStatement</code>, <code>ResultSet</code>, SQL injection.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p54" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p54" aria-label="Mark project 54 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">54</span><h3>SQL Playground in Docker</h3></a></div>
+        <p>Spin up Postgres in Docker, design a schema, write joins, add indexes, and read EXPLAIN plans.</p>
+        <p class="teaches"><span class="k">Concepts</span>Schema design, joins, indexes, EXPLAIN, Docker for local dev.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p55" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p55" aria-label="Mark project 55 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">55</span><h3>JDBC Contact Book</h3></a></div>
+        <p>A contact book backed by a real database — using plain JDBC, no ORM.</p>
+        <p class="teaches"><span class="k">Concepts</span>Connections, <code>PreparedStatement</code>, SQL injection, mapping rows to objects, connection leaks.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p56" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p56" aria-label="Mark project 56 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">56</span><h3>DAO / Repository Layer</h3></a></div>
+        <p>Refactor the JDBC access into a clean DAO/repository layer with interfaces.</p>
+        <p class="teaches"><span class="k">Concepts</span>Separation of concerns, interfaces, row mappers, testability with fakes.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p57" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p57" aria-label="Mark project 57 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">57</span><h3>Transactional Money Transfer</h3></a></div>
+        <p>Implement a transfer between two accounts with proper ACID guarantees.</p>
+        <p class="teaches"><span class="k">Concepts</span>ACID, commit/rollback, isolation levels, deadlocks at the DB layer, correctness over speed.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p58" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p58" aria-label="Mark project 58 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">58</span><h3>HikariCP Pool Experiment</h3></a></div>
+        <p>Replace <code>DriverManager</code> with a connection pool and measure the difference.</p>
+        <p class="teaches"><span class="k">Concepts</span>Connection pooling, sizing, leak detection, latency vs. throughput, why pools matter.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p59" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p59" aria-label="Mark project 59 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">59</span><h3>Flyway Migrations Project</h3></a></div>
+        <p>Version your schema with Flyway and rehearse upgrades and rollbacks.</p>
+        <p class="teaches"><span class="k">Concepts</span>Versioned schema, repeatable migrations, rollback strategy, keeping dev/prod in sync.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p60" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p60" aria-label="Mark project 60 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">60</span><h3>Refactor with Hibernate (ORM)</h3></a></div>
+        <p>Replace your hand-written SQL with an Object-Relational Mapper. Your <code>Task</code> class becomes an entity.</p>
+        <p class="teaches"><span class="k">Concepts</span>The ORM idea, JPA annotations (<code>@Entity</code>, <code>@Id</code>, <code>@Column</code>), <code>EntityManager</code>, the object/relational impedance mismatch.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p61" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p61" aria-label="Mark project 61 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">61</span><h3>JPA Library Model</h3></a></div>
+        <p>Model a library with JPA: books, authors, members, loans, with proper relationships.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>@Entity</code>, <code>@OneToMany</code>/<code>@ManyToMany</code>, lazy loading, the N+1 problem, JPQL.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p62" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p62" aria-label="Mark project 62 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">62</span><h3>Query Lab</h3></a></div>
+        <p>A project dedicated to queries: JPQL, Criteria, projections, Specifications, and fetch joins.</p>
+        <p class="teaches"><span class="k">Concepts</span>JPQL vs. Criteria, projections, Specifications, fetch joins, performance implications.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 7 ================= -->
+  <section class="tier" data-tier="7">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 7</span>
+      <h2>Spring Boot &amp; Web Development</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Build real web applications. Spring Boot, REST, security, templating, and the patterns that make APIs pleasant to use.</p>
+
+    <article class="project" data-id="p63" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p63" aria-label="Mark project 63 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">63</span><h3>RESTful To-Do API</h3></a></div>
+        <p>Expose the To-Do list over HTTP: <code>GET /tasks</code>, <code>POST /tasks</code>, <code>PUT /tasks/{id}</code>, <code>DELETE /tasks/{id}</code>. Test with Postman or curl.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Boot, <code>@RestController</code>, <code>@GetMapping</code> / <code>@PostMapping</code>, JSON serialization, proper status codes, dependency injection.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p64" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p64" aria-label="Mark project 64 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">64</span><h3>Full-Stack To-Do (API + Frontend)</h3></a></div>
+        <p>Add a plain HTML/CSS/JS frontend that talks to your API using <code>fetch</code>. Now you can actually use it.</p>
+        <p class="teaches"><span class="k">Concepts</span>CORS and why it bites you, DOM manipulation, async/await in JavaScript, how a real client consumes a REST API.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p65" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p65" aria-label="Mark project 65 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">65</span><h3>Spring Data JPA Refactor</h3></a></div>
+        <p>Swap your manual repository code for a <code>JpaRepository</code> interface and let Spring write the queries.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Data JPA, derived query methods, <code>@Service</code> layer, <code>@Transactional</code>, eliminating boilerplate without losing understanding.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p66" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p66" aria-label="Mark project 66 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">66</span><h3>Validation &amp; Global Error Handling</h3></a></div>
+        <p>Centralize validation and error responses across a Spring Boot API.</p>
+        <p class="teaches"><span class="k">Concepts</span>Bean Validation, <code>@ControllerAdvice</code>, <code>ProblemDetail</code> (RFC 7807), consistent error contracts.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p67" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p67" aria-label="Mark project 67 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">67</span><h3>Blog Engine API</h3></a></div>
+        <p>Multiple entities — <code>User</code>, <code>Post</code>, <code>Comment</code> — with real relationships and business rules (only an author can edit their post).</p>
+        <p class="teaches"><span class="k">Concepts</span><code>@OneToMany</code> / <code>@ManyToOne</code>, lazy vs eager loading and the N+1 problem, DTOs, validation with <code>@Valid</code>, pagination and sorting.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p68" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p68" aria-label="Mark project 68 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">68</span><h3>Catalog with Paging &amp; Filtering</h3></a></div>
+        <p>A product catalog with pagination, sorting, and dynamic filters.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>Pageable</code>, sorting, dynamic filters with Specifications, stable pagination.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p69" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p69" aria-label="Mark project 69 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">69</span><h3>URL Shortener</h3></a></div>
+        <p>An API that turns a long URL into a short code and redirects on visit. Add click analytics while you're at it.</p>
+        <p class="teaches"><span class="k">Concepts</span>Generating unique keys (Base62 encoding), database indexing for O(1)-ish lookups, caching with Redis or in-memory, HTTP 301 vs 302.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p70" data-tracks="fullstack">
+      <label><input type="checkbox" data-id="p70" aria-label="Mark project 70 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">70</span><h3>Bookstore with Thymeleaf</h3></a></div>
+        <p>A server-rendered bookstore with forms, sessions, and flash messages.</p>
+        <p class="teaches"><span class="k">Concepts</span>Server-side MVC, Thymeleaf templates, form binding, flash attributes, CSRF.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p71" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p71" aria-label="Mark project 71 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">71</span><h3>Session Login &amp; Roles</h3></a></div>
+        <p>A classic session-based login with roles and protected pages.</p>
+        <p class="teaches"><span class="k">Concepts</span>Session-based auth, password hashing, role checks, method security, CSRF.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p72" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p72" aria-label="Mark project 72 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">72</span><h3>File Upload / Download Service</h3></a></div>
+        <p>A service for uploading, storing, and serving files.</p>
+        <p class="teaches"><span class="k">Concepts</span>Multipart, streaming, storage abstraction (local/S3), limits, content-type handling.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p73" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p73" aria-label="Mark project 73 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">73</span><h3>Swagger / OpenAPI Docs</h3></a></div>
+        <p>Add interactive API documentation to an existing service.</p>
+        <p class="teaches"><span class="k">Concepts</span>API contracts, springdoc-openapi, versioning, keeping docs honest.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p74" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p74" aria-label="Mark project 74 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">74</span><h3>Profiles, Config &amp; Actuator</h3></a></div>
+        <p>Externalize configuration per environment and expose operational endpoints.</p>
+        <p class="teaches"><span class="k">Concepts</span>Profiles, externalized config, secrets, Spring Boot Actuator, health and metrics endpoints.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p75" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p75" aria-label="Mark project 75 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">75</span><h3>Scheduler &amp; Domain Events</h3></a></div>
+        <p>A background scheduler plus domain events for decoupled reactions.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>@Scheduled</code>, <code>ApplicationEvent</code>, <code>@Async</code>, transactional events, outbox-lite thinking.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p76" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p76" aria-label="Mark project 76 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">76</span><h3>Email Notification Service</h3></a></div>
+        <p>Send templated emails asynchronously, with retries on failure.</p>
+        <p class="teaches"><span class="k">Concepts</span>Async sending, templates, retries, failure queues, why email is never guaranteed.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p77" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p77" aria-label="Mark project 77 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">77</span><h3>First Portfolio Project</h3></a></div>
+        <p>Pick something you actually care about — a small Twitter clone, a recipe manager, a personal expense tracker. Build it properly and ship it.</p>
+        <p class="teaches"><span class="k">Concepts</span>Everything so far: testing with JUnit &amp; Mockito, authentication, API docs with Swagger/OpenAPI, Docker, deployment. This is the one you put on your CV.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 8 ================= -->
+  <section class="tier" data-tier="8">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 8</span>
+      <h2>Spring Ecosystem Depth</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">You know <code>@RestController</code>. Now learn what the rest of Spring actually does for you.</p>
+
+    <article class="project" data-id="p78" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p78" aria-label="Mark project 78 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">78</span><h3>Full Auth System</h3></a></div>
+        <p>Registration, login, JWT access + refresh tokens, token revocation, roles, and method-level security.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Security 6, JJWT/Nimbus, BCrypt, stateless vs. stateful, refresh rotation, authorities vs. roles, securing endpoints at method level.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p79" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p79" aria-label="Mark project 79 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">79</span><h3>OAuth2 / Social Login</h3></a></div>
+        <p>"Sign in with Google/GitHub", map external identities to local users, and link accounts.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Security OAuth2 Client, OIDC, authorization code flow, scopes, identity providers, account linking.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p80" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p80" aria-label="Mark project 80 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">80</span><h3>Cross-Cutting Concerns with AOP</h3></a></div>
+        <p>Build an <code>@AuditLog</code> annotation and a custom <code>@Retryable</code>; add request timing metrics.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring AOP, AspectJ, proxies, pointcuts, advice ordering, why self-invocation breaks AOP, keeping cross-cutting code out of business logic.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p81" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p81" aria-label="Mark project 81 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">81</span><h3>Batch Processing Job</h3></a></div>
+        <p>Nightly import of a large CSV of transactions with validation, chunked processing, and a reconciliation report.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Batch, Quartz (or <code>@Scheduled</code>), chunk-oriented processing, job/step listeners, restart &amp; skip logic.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p82" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p82" aria-label="Mark project 82 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">82</span><h3>Async Orchestration</h3></a></div>
+        <p>Call three slow services in parallel and combine results. Add timeouts and fallbacks.</p>
+        <p class="teaches"><span class="k">Concepts</span><code>@Async</code> with a custom <code>ThreadPoolTaskExecutor</code>, <code>CompletableFuture</code>, thread-pool sizing, exception propagation, why <code>@Async</code> on a private method silently does nothing.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p83" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p83" aria-label="Mark project 83 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">83</span><h3>GraphQL API</h3></a></div>
+        <p>Expose the Blog Engine over GraphQL alongside REST and compare the two.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring for GraphQL, schema-first vs. code-first, resolvers, the N+1 problem and DataLoader batching, when GraphQL is the wrong choice.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p84" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p84" aria-label="Mark project 84 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">84</span><h3>gRPC Service</h3></a></div>
+        <p>A high-performance internal service called by another service, with contract-first protobuf definitions.</p>
+        <p class="teaches"><span class="k">Concepts</span>gRPC, Protocol Buffers, HTTP/2, streaming RPCs, protobuf vs. JSON trade-offs, schema evolution, contract-first design.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 9 ================= -->
+  <section class="tier" data-tier="9">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 9</span>
+      <h2>Engineering Craft, Testing &amp; Quality</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">The part that separates hobbyists from professionals. Tests, pipelines, module boundaries, and code that fails the build when it gets sloppy.</p>
+
+    <article class="project" data-id="p85" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p85" aria-label="Mark project 85 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">85</span><h3>Full Test Suite for the To-Do API</h3></a></div>
+        <p>Rewrite project 63 with tests written alongside the code. Unit tests, slice tests, and repository tests.</p>
+        <p class="teaches"><span class="k">Concepts</span>JUnit 5, Mockito, AssertJ, Spring Boot Test, given-when-then structure, what to mock vs. what not to, coverage as a signal not a goal.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p86" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p86" aria-label="Mark project 86 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">86</span><h3>Integration Tests with Testcontainers</h3></a></div>
+        <p>Spin up a real PostgreSQL in Docker from your test code. No more H2 "it works in tests" lies.</p>
+        <p class="teaches"><span class="k">Concepts</span>Testcontainers, Docker, integration vs. unit boundaries, test isolation, Flyway migrations, container lifecycle in tests.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p87" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p87" aria-label="Mark project 87 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">87</span><h3>Tested String &amp; Math Utils</h3></a></div>
+        <p>A utility library developed test-first with JUnit 5, AssertJ, and parameterized tests.</p>
+        <p class="teaches"><span class="k">Concepts</span>JUnit 5, AssertJ, parameterized tests, TDD loop, edge cases.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p88" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p88" aria-label="Mark project 88 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">88</span><h3>Mockito Warm-up: Notifier</h3></a></div>
+        <p>A small service that calls an external notifier, tested with mocks.</p>
+        <p class="teaches"><span class="k">Concepts</span>Mocks vs. stubs, verify, test doubles, testing boundaries, avoiding over-mocking.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p89" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p89" aria-label="Mark project 89 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">89</span><h3>WireMock Integration Tests</h3></a></div>
+        <p>Test an HTTP client against a fake server, including failures and timeouts.</p>
+        <p class="teaches"><span class="k">Concepts</span>WireMock, testing external API clients, failure simulation, contract testing mindset.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p90" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p90" aria-label="Mark project 90 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">90</span><h3>TDD Kata</h3></a></div>
+        <p>Roman Numerals, Bowling, or the Gilded Rose refactoring kata — strictly red-green-refactor.</p>
+        <p class="teaches"><span class="k">Concepts</span>The actual TDD loop, small steps, refactoring under green, why tests are a design tool.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p91" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p91" aria-label="Mark project 91 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">91</span><h3>Legacy Code Refactoring Kata</h3></a></div>
+        <p>Take a messy codebase, add characterization tests, then refactor safely.</p>
+        <p class="teaches"><span class="k">Concepts</span>Characterization tests, SOLID, clean code, safe refactoring, working with legacy code.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p92" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p92" aria-label="Mark project 92 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">92</span><h3>Multi-Module Build</h3></a></div>
+        <p>Split a project into <code>domain</code>, <code>application</code>, <code>infrastructure</code>, <code>web</code> modules with a parent POM.</p>
+        <p class="teaches"><span class="k">Concepts</span>Maven (or Gradle), BOM imports, build profiles, why module boundaries matter, keeping the domain framework-free.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p93" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p93" aria-label="Mark project 93 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">93</span><h3>Code Quality Gate</h3></a></div>
+        <p>Wire static analysis into the build and make it fail on violations. Add a coverage threshold.</p>
+        <p class="teaches"><span class="k">Concepts</span>Checkstyle, SpotBugs, PMD, JaCoCo, SonarQube (Docker), enforcing standards automatically, technical debt metrics.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p94" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p94" aria-label="Mark project 94 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">94</span><h3>CI/CD Pipeline</h3></a></div>
+        <p>Every push builds, tests, packages a Docker image, and deploys to a staging environment.</p>
+        <p class="teaches"><span class="k">Concepts</span>GitHub Actions (or GitLab CI), pipeline stages, caching, matrix builds, environment secrets, automated deployment, rollback thinking.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p95" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p95" aria-label="Mark project 95 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">95</span><h3>Design Patterns in Practice</h3></a></div>
+        <p>One cohesive project (e.g. a pricing/discount engine) using Strategy, Factory, Builder, Decorator, Observer, Template Method, and Chain of Responsibility.</p>
+        <p class="teaches"><span class="k">Concepts</span>Patterns as vocabulary for trade-offs, not cargo cult. When a pattern helps and when it's over-engineering.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p96" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p96" aria-label="Mark project 96 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">96</span><h3>Hexagonal Architecture Rewrite</h3></a></div>
+        <p>Rewrite the Blog Engine (project 67) with ports &amp; adapters: pure domain, no Spring annotations inside it, adapters at the edges.</p>
+        <p class="teaches"><span class="k">Concepts</span>Dependency inversion in practice, testable domain logic, ArchUnit rules to enforce boundaries, screaming architecture.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p97" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p97" aria-label="Mark project 97 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">97</span><h3>CLI Tool with picocli</h3></a></div>
+        <p>Package a real command-line tool with subcommands, options, and help output.</p>
+        <p class="teaches"><span class="k">Concepts</span>Command parsing with picocli, runnable fat jars, packaging, user-facing UX.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p98" data-tracks="fullstack distributed architecture">
+      <label><input type="checkbox" data-id="p98" aria-label="Mark project 98 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">98</span><h3>Git Workflow Sandbox</h3></a></div>
+        <p>A deliberate exercise in branches, rebase, conflicts, and pull-request flows.</p>
+        <p class="teaches"><span class="k">Concepts</span>Branches, rebase vs merge, merge conflicts, PR habit, readable commit history.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 10 ================= -->
+  <section class="tier" data-tier="10">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 10</span>
+      <h2>Messaging, Distributed Systems &amp; Resilience</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Systems that survive failure. Events, queues, retries, sagas, idempotency, and the difference between "runs on one machine" and "runs in production".</p>
+
+    <article class="project" data-id="p99" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p99" aria-label="Mark project 99 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">99</span><h3>Event-Driven Order Pipeline</h3></a></div>
+        <p>Order service publishes events; inventory, payment, and notification services consume them.</p>
+        <p class="teaches"><span class="k">Concepts</span>Apache Kafka, Spring Kafka, Avro/JSON schema, topics, partitions, consumer groups, offsets, at-least-once delivery, replaying events.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p100" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p100" aria-label="Mark project 100 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">100</span><h3>Work Queue with Retries and DLQ</h3></a></div>
+        <p>Failed messages retry with backoff, then land in a dead-letter queue with a way to inspect and replay them.</p>
+        <p class="teaches"><span class="k">Concepts</span>RabbitMQ (or Kafka), Spring AMQP, retry policies, poison messages, DLQ design, operational visibility into failures.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p101" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p101" aria-label="Mark project 101 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">101</span><h3>Transactional Outbox Pattern</h3></a></div>
+        <p>Publish events reliably without losing them when the DB commit succeeds but the broker call fails.</p>
+        <p class="teaches"><span class="k">Concepts</span>Dual-write problem, outbox table, polling publisher vs. CDC (Debezium), eventual consistency.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p102" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p102" aria-label="Mark project 102 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">102</span><h3>Idempotency &amp; Exactly-Once Semantics</h3></a></div>
+        <p>Make a payment endpoint safe to call twice. Make a consumer process duplicates safely.</p>
+        <p class="teaches"><span class="k">Concepts</span>Why exactly-once is mostly a myth, idempotency keys, Redis or DB unique constraints, deduplication windows, designing for retries.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p103" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p103" aria-label="Mark project 103 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">103</span><h3>Saga Pattern</h3></a></div>
+        <p>A distributed transaction across three services with compensating actions on failure.</p>
+        <p class="teaches"><span class="k">Concepts</span>Distributed transaction impossibility, compensation vs. rollback, choreography vs. orchestration, failure state machines.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p104" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p104" aria-label="Mark project 104 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">104</span><h3>Resilience Toolkit</h3></a></div>
+        <p>Wrap a flaky downstream service with circuit breaker, retry, bulkhead, rate limiter, and time limiter. Prove each one with a chaos endpoint.</p>
+        <p class="teaches"><span class="k">Concepts</span>Resilience4j, Spring Boot Actuator, Micrometer, cascading failure, fail-fast vs. fallback, bulkhead isolation, tuning thresholds with real data.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p105" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p105" aria-label="Mark project 105 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">105</span><h3>Distributed Caching &amp; Locking</h3></a></div>
+        <p>Cache-aside with TTL and invalidation; then a distributed lock for a critical section.</p>
+        <p class="teaches"><span class="k">Concepts</span>Redis, Spring Data Redis, Caffeine (local tier), cache-aside vs. write-through, stampede/thundering herd, TTL jitter, lock leases.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p106" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p106" aria-label="Mark project 106 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">106</span><h3>Capacity-Safe Booking</h3></a></div>
+        <p>A booking system that survives concurrent attempts on the same slot.</p>
+        <p class="teaches"><span class="k">Concepts</span>Optimistic vs. pessimistic locking, race conditions, unique constraints, retries.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p107" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p107" aria-label="Mark project 107 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">107</span><h3>Multi-Tenant RBAC App</h3></a></div>
+        <p>A multi-tenant app with tenants, roles, permissions, and an audit log.</p>
+        <p class="teaches"><span class="k">Concepts</span>Tenant isolation, roles/permissions model, audit log, data leakage risks.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p108" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p108" aria-label="Mark project 108 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">108</span><h3>WebSocket Live Notifications</h3></a></div>
+        <p>Push real-time notifications to connected clients.</p>
+        <p class="teaches"><span class="k">Concepts</span>STOMP, pub/sub, Spring WebSocket, scaling connections, backpressure and fan-out.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 11 ================= -->
+  <section class="tier" data-tier="11">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 11</span>
+      <h2>Containers, Cloud, Observability &amp; Performance</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">Running software is a different skill from writing it. Deploy it, see what it's doing, measure how fast it is, and fix it when it breaks.</p>
+
+    <article class="project" data-id="p109" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p109" aria-label="Mark project 109 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">109</span><h3>Containerize the Whole Stack</h3></a></div>
+        <p>Multi-stage Dockerfile with a small final image, plus <code>docker-compose</code> bringing up app + Postgres + Redis + Kafka.</p>
+        <p class="teaches"><span class="k">Concepts</span>Docker, docker-compose, multi-stage builds, non-root user, layer caching, image size, env config, health checks.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p110" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p110" aria-label="Mark project 110 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">110</span><h3>Kubernetes Deployment</h3></a></div>
+        <p>Deploy a service with replicas, config, secrets, health probes, and autoscaling.</p>
+        <p class="teaches"><span class="k">Concepts</span>Kubernetes (minikube/kind), Deployment, Service, Ingress, ConfigMap, Secret, HPA, liveness vs. readiness, resource requests/limits, rolling updates, zero-downtime deploys.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p111" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p111" aria-label="Mark project 111 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">111</span><h3>Microservices Split</h3></a></div>
+        <p>Break the monolith into three services with service discovery, a gateway, and centralized config.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring Cloud (Eureka, Gateway, Config Server), OpenFeign, the real cost of microservices, config drift, why you might not want this.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p112" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p112" aria-label="Mark project 112 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">112</span><h3>Observability Stack</h3></a></div>
+        <p>Instrument the app so you can answer "why is it slow?" and "what broke?" without SSHing anywhere.</p>
+        <p class="teaches"><span class="k">Concepts</span>Micrometer, Prometheus, Grafana, OpenTelemetry, Jaeger/Tempo, correlation IDs, the three pillars (metrics, logs, traces), RED/USE metrics, trace-context propagation.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p113" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p113" aria-label="Mark project 113 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">113</span><h3>Structured Logging &amp; Aggregation</h3></a></div>
+        <p>JSON logs with MDC context, shipped to a central store, searchable by trace ID.</p>
+        <p class="teaches"><span class="k">Concepts</span>SLF4J, Logback JSON encoder, MDC, Loki or ELK stack, log levels that mean something, correlation vs. causation, PII in logs, cost of logging.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p114" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p114" aria-label="Mark project 114 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">114</span><h3>Cloud Deployment</h3></a></div>
+        <p>Deploy a real service to a cloud provider with a managed DB, object storage, IAM, and secrets.</p>
+        <p class="teaches"><span class="k">Concepts</span>AWS (ECS Fargate or Lambda, RDS, S3, IAM, Secrets Manager, CloudWatch) or GCP/Azure equivalents, managed vs. self-hosted, IAM least privilege, secrets never in the repo, cost awareness, infra-as-code basics.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p115" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p115" aria-label="Mark project 115 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">115</span><h3>Performance &amp; Profiling</h3></a></div>
+        <p>Find and fix a memory leak and a CPU hotspot. Tune the GC. Then load-test the result.</p>
+        <p class="teaches"><span class="k">Concepts</span>JFR, async-profiler, VisualVM, GC logs, k6 or Gatling, JVM internals, heap vs. stack, GC pauses, reading flame graphs, measuring before optimizing.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p116" data-tracks="distributed">
+      <label><input type="checkbox" data-id="p116" aria-label="Mark project 116 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">116</span><h3>Nginx Reverse Proxy + HTTPS</h3></a></div>
+        <p>Put Nginx in front of your app, terminate TLS, and harden headers.</p>
+        <p class="teaches"><span class="k">Concepts</span>Proxying, TLS certificates (Let's Encrypt), headers, basic hardening, gzip, caching.</p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= TIER 12 ================= -->
+  <section class="tier" data-tier="12">
+    <div class="tier-head">
+      <span class="tier-badge">Tier 12</span>
+      <h2>Advanced Java &amp; Architecture Capstone</h2>
+      <span class="tier-count" data-count></span>
+    </div>
+    <p class="tier-note">The middle/senior boundary. Modern Java, alternative paradigms, and one real system you can defend in an interview.</p>
+
+    <article class="project" data-id="p117" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p117" aria-label="Mark project 117 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">117</span><h3>Reactive Service</h3></a></div>
+        <p>A non-blocking API with backpressure and streaming responses.</p>
+        <p class="teaches"><span class="k">Concepts</span>Spring WebFlux, Project Reactor, R2DBC, Server-Sent Events / WebSocket, Mono/Flux operators, backpressure, why blocking calls inside reactive code are poison, when reactive is worth the complexity.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p118" data-tracks="fullstack distributed">
+      <label><input type="checkbox" data-id="p118" aria-label="Mark project 118 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">118</span><h3>Virtual Threads &amp; Structured Concurrency</h3></a></div>
+        <p>Rebuild a blocking, thread-per-request service using Java 21+ virtual threads. Compare throughput and code complexity against the original.</p>
+        <p class="teaches"><span class="k">Concepts</span>Java 21+, virtual threads, <code>StructuredTaskScope</code>, <code>ExecutorService</code>, platform vs. virtual threads, pinning, why "just use virtual threads" isn't always the answer.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p119" data-tracks="fullstack architecture">
+      <label><input type="checkbox" data-id="p119" aria-label="Mark project 119 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">119</span><h3>Full-Text Search Service</h3></a></div>
+        <p>Index documents and support fuzzy search, filters, facets, and relevance tuning.</p>
+        <p class="teaches"><span class="k">Concepts</span>Elasticsearch or OpenSearch, Spring Data Elasticsearch, index mappings, inverted indexes, analyzers/tokenizers, relevance scoring, keeping the search index in sync with the DB.</p>
+      </div>
+    </article>
+
+    <article class="project" data-id="p120" data-tracks="architecture">
+      <label><input type="checkbox" data-id="p120" aria-label="Mark project 120 complete"></label>
+      <div class="project-body">
+        <div class="project-title"><a class="project-link" href="https://github.com/vbforge/ask-my-notes" target="_blank" rel="noopener"><span class="num">120</span><h3>Architecture Capstone</h3></a></div>
+        <p>A real system of your choosing (e-commerce, booking, ticketing) built as a few services with proper domain modeling, docs, and production readiness.</p>
+        <p class="teaches"><span class="k">Concepts</span>Java 21, Spring Boot 3, PostgreSQL, Kafka, Redis, Docker, K8s, CI/CD, observability, Security, JUnit/Testcontainers, bounded contexts, aggregates &amp; value objects, ADRs documenting your trade-offs, runbooks, on-call thinking. <b>This is the one on your CV.</b></p>
+      </div>
+    </article>
+  </section>
+
+  <!-- ================= PRINCIPLES ================= -->
+  <section class="principles">
+    <h2>Not Projects, But Required</h2>
+    <p class="sub">These aren't checkbox items — they're the habits that move you from "knows Java" to "middle-level engineer". Treat them as ongoing.</p>
+    <ul>
+      <li><b>Contribute to open source.</b> One merged PR in a real project teaches more about code review than ten tutorials.</li>
+      <li><b>Review other people's code.</b> And accept reviews on yours without ego.</li>
+      <li><b>Read production code.</b> Follow the design of a well-regarded OSS codebase — Spring, Kafka clients, OkHttp.</li>
+      <li><b>Practice system design out loud.</b> Design "a URL shortener" or "a news feed" with trade-offs in 45 minutes.</li>
+      <li><b>Write ADRs for every capstone decision.</b> Context, options, choice, consequences. Senior interviews probe exactly this.</li>
+      <li><b>Debug a production-shaped incident on purpose.</b> Kill the DB, fill the disk, write a post-mortem.</li>
+      <li><b>Work on soft skills.</b> Estimation, breaking down ambiguous tickets, asking clarifying questions, written English.</li>
+    </ul>
+  </section>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <strong>No projects match your filters.</strong>
+    Try a different keyword, or clear some filters.
+    <div><button class="btn" id="clearFiltersBtn2">↺ Clear all filters</button></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Tick a box when you've built it <em>and</em> understood it. Progress is stored locally in your browser only.</p>
+  <p style="opacity:.7; margin-top:8px">120 projects · 12 tiers · 3 tracks</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'java-project-checklist-v3';
+  var THEME_KEY   = 'java-project-checklist-theme-v3';
+
+  var checkboxes   = [].slice.call(document.querySelectorAll('input[type="checkbox"][data-id]'));
+  var projects     = [].slice.call(document.querySelectorAll('.project'));
+  var tiers        = [].slice.call(document.querySelectorAll('.tier'));
+  var tierCards    = [].slice.call(document.querySelectorAll('.tier-card'));
+  var barFill      = document.getElementById('barFill');
+  var barLabel     = document.getElementById('barLabel');
+  var toastEl      = document.getElementById('toast');
+  var emptyState   = document.getElementById('emptyState');
+  var searchInput  = document.getElementById('searchInput');
+  var searchClear  = document.getElementById('searchClear');
+  var clearBtn     = document.getElementById('clearFiltersBtn');
+  var clearBtn2    = document.getElementById('clearFiltersBtn2');
+  var filterStatus = document.getElementById('filterStatus');
+  var total        = checkboxes.length;
+
+  /* ---------- storage ---------- */
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function persist() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+  var state = load();
+
+  /* ---------- helpers ---------- */
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function highlight(text, q) {
+    if (!q) return escHtml(text);
+    var lower = text.toLowerCase(), lq = q.toLowerCase();
+    var out = '', i = 0;
+    while (i < text.length) {
+      var idx = lower.indexOf(lq, i);
+      if (idx === -1) { out += escHtml(text.slice(i)); break; }
+      out += escHtml(text.slice(i, idx)) + '<mark>' + escHtml(text.slice(idx, idx + lq.length)) + '</mark>';
+      i = idx + lq.length;
+    }
+    return out;
+  }
+
+  /* ---------- render completion ---------- */
+  function applyState() {
+    checkboxes.forEach(function (cb) {
+      var done = !!state[cb.dataset.id];
+      cb.checked = done;
+      var card = cb.closest('.project');
+      if (card) card.classList.toggle('done', done);
+    });
+    updateCounts();
+  }
+  function updateCounts() {
+    var done = 0;
+    tiers.forEach(function (tier) {
+      var boxes   = tier.querySelectorAll('input[type="checkbox"][data-id]');
+      var checked = tier.querySelectorAll('input[type="checkbox"][data-id]:checked');
+      var label   = tier.querySelector('[data-count]');
+      if (label) label.textContent = checked.length + ' / ' + boxes.length;
+      done += checked.length;
+    });
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    barFill.style.width = pct + '%';
+    barLabel.textContent = done + ' / ' + total + '  (' + pct + '%)';
+  }
+
+  /* ---------- toast ---------- */
+  var toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  /* ---------- checkbox events ---------- */
+  checkboxes.forEach(function (cb) {
+    cb.addEventListener('change', function () {
+      if (cb.checked) state[cb.dataset.id] = true;
+      else delete state[cb.dataset.id];
+      persist();
+      applyState();
+      var card = cb.closest('.project');
+      var name = card ? card.querySelector('h3').textContent : '';
+      toast(cb.checked ? '✓ ' + name : 'Unchecked: ' + name);
+    });
+  });
+
+  /* ---------- filters ---------- */
+  var trackChips  = [].slice.call(document.querySelectorAll('.chip[data-track]'));
+  var tierChips   = [].slice.call(document.querySelectorAll('.tier-chip[data-tier]'));
+  var activeTrack = 'all';
+  var activeTierCard = null; // null = all tiers
+
+  function applyFilters() {
+    var q = searchInput.value.trim();
+    var qLower = q.toLowerCase();
+
+    var enabledTiers = {};
+    if (activeTierCard !== null) {
+      enabledTiers[String(activeTierCard)] = true;
+    } else {
+      tierChips.forEach(function (c) { if (c.classList.contains('on')) enabledTiers[c.dataset.tier] = true; });
+    }
+
+    var anyVisible = false;
+    var visibleCount = 0;
+    var totalCount = projects.length;
+
+    tiers.forEach(function (tier) {
+      var tierNum = tier.dataset.tier;
+      var tierOn  = !!enabledTiers[tierNum];
+
+      if (!tierOn) { tier.classList.add('filtered-out'); return; }
+
+      var anyInTier = false;
+      tier.querySelectorAll('.project').forEach(function (p) {
+        var tracks = (p.dataset.tracks || '').split(/\s+/);
+        var trackMatch  = (activeTrack === 'all') || tracks.indexOf(activeTrack) !== -1;
+        var searchMatch = true;
+        var titleEl = p.querySelector('h3');
+        var descEl  = p.querySelector('.teaches');
+        var titleText = titleEl ? titleEl.textContent : '';
+        var descText  = descEl ? descEl.textContent : '';
+
+        if (qLower) {
+          searchMatch =
+            titleText.toLowerCase().indexOf(qLower) !== -1 ||
+            descText.toLowerCase().indexOf(qLower) !== -1;
+        }
+
+        var show = trackMatch && searchMatch;
+
+        // Highlight when showing and searching
+        if (titleEl) titleEl.innerHTML = qLower ? highlight(titleText, qLower) : escHtml(titleText);
+        if (descEl) {
+          // Preserve the .k span structure
+          var kEl = descEl.querySelector('.k');
+          var kText = kEl ? kEl.textContent : 'Concepts';
+          var fullText = descText;
+          var content = fullText;
+          // When no query, just set plain escaped text
+          if (!qLower) {
+            descEl.innerHTML = '<span class="k">' + escHtml(kText) + '</span>' + escHtml(descText.replace(kText, '').trim());
+          } else {
+            // Highlight but keep the .k prefix
+            descEl.innerHTML = '<span class="k">' + escHtml(kText) + '</span>' +
+              highlight(descText.replace(kText, '').trim(), qLower);
+          }
+        }
+
+        if (show) {
+          p.classList.remove('filtered-out');
+          anyInTier = true;
+          visibleCount++;
+        } else {
+          p.classList.add('filtered-out');
+        }
+      });
+
+      if (anyInTier) {
+        tier.classList.remove('filtered-out');
+        anyVisible = true;
+      } else {
+        tier.classList.add('filtered-out');
+      }
+    });
+
+    // Status line
+    var anyFilter = q.length > 0 || activeTrack !== 'all' ||
+                    activeTierCard !== null ||
+                    tierChips.some(function (c) { return !c.classList.contains('on'); });
+    if (anyFilter) {
+      filterStatus.textContent = 'Showing ' + visibleCount + ' of ' + totalCount + ' projects';
+      filterStatus.classList.add('has-filters');
+    } else {
+      filterStatus.textContent = '';
+      filterStatus.classList.remove('has-filters');
+    }
+
+    emptyState.hidden = anyVisible;
+    searchClear.hidden = q.length === 0;
+  }
+
+  /* ---------- search events ---------- */
+  searchInput.addEventListener('input', applyFilters);
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      applyFilters();
+      searchInput.blur();
+    }
+  });
+  searchClear.addEventListener('click', function () {
+    searchInput.value = '';
+    applyFilters();
+    searchInput.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== searchInput &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+
+  /* ---------- track chips ---------- */
+  trackChips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      trackChips.forEach(function (c) { c.classList.remove('active'); });
+      chip.classList.add('active');
+      activeTrack = chip.dataset.track;
+      applyFilters();
+    });
+  });
+
+  /* ---------- tier chips (T1–T12) ---------- */
+  tierChips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      chip.classList.toggle('on');
+      activeTierCard = null; // chips override card selection
+      tierCards.forEach(function (c) { c.classList.remove('selected'); });
+      applyFilters();
+    });
+  });
+
+  /* ---------- tier cards ---------- */
+  tierCards.forEach(function (card) {
+    card.addEventListener('click', function () {
+      var tierNum = parseInt(card.dataset.tier, 10);
+      if (activeTierCard === tierNum) {
+        // Toggle off → show all
+        activeTierCard = null;
+        card.classList.remove('selected');
+      } else {
+        activeTierCard = tierNum;
+        tierCards.forEach(function (c) { c.classList.remove('selected'); });
+        card.classList.add('selected');
+
+        // Also make the T1–T12 chips reflect only the selected tier
+        tierChips.forEach(function (c) {
+          c.classList.toggle('on', c.dataset.tier === String(tierNum));
+        });
+      }
+      applyFilters();
+
+      // Scroll to the selected tier
+      if (activeTierCard !== null) {
+        var target = document.querySelector('.tier[data-tier="' + tierNum + '"]');
+        if (target) {
+          setTimeout(function () {
+            target.scrollIntoView({ behavior:'smooth', block:'start' });
+          }, 40);
+        }
+      }
+    });
+  });
+
+  /* ---------- clear filters ---------- */
+  function clearFilters() {
+    searchInput.value = '';
+    activeTrack = 'all';
+    activeTierCard = null;
+    trackChips.forEach(function (c) { c.classList.toggle('active', c.dataset.track === 'all'); });
+    tierChips.forEach(function (c) { c.classList.add('on'); });
+    tierCards.forEach(function (c) { c.classList.remove('selected'); });
+    applyFilters();
+  }
+  clearBtn.addEventListener('click', clearFilters);
+  if (clearBtn2) clearBtn2.addEventListener('click', clearFilters);
+
+  /* ---------- reset progress ---------- */
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('Reset all progress? This cannot be undone.')) return;
+    state = {};
+    persist();
+    applyState();
+    toast('Progress reset');
+  });
+
+  /* ---------- print ---------- */
+  document.getElementById('printBtn').addEventListener('click', function () {
+    window.print();
+  });
+
+  /* ---------- theme ---------- */
+  var themeBtn = document.getElementById('themeBtn');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+  var saved;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+  if (!saved) {
+    saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  setTheme(saved);
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- init ---------- */
+  applyState();
+  applyFilters();
+})();
+</script>
+</body>
+</html>

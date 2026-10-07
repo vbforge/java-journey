@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java Journey — Home</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfbfc;
+    --text:#16181d; --muted:#697386; --border:#e4e7ec;
+    --accent:#f89820; --accent-2:#5382a1; --done:#15a34a;
+    --accentnew: #ce0b56; --accent-2:#5382a5; --done: #a2f3c1;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px -12px rgba(16,24,40,.25);
+    --shadow-lg:0 4px 8px rgba(16,24,40,.06), 0 24px 48px -24px rgba(16,24,40,.35);
+    --radius:14px;
+    --radius-lg:18px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+
+    --c-projects:#5382a1;
+    --c-projects-2:#7fb2e0;
+    --c-algorithms:#15a34a;
+    --c-algorithms-2:#4ade80;
+    --c-stack:#f89820;
+    --c-stack-2:#fb923c;
+  }
+  [data-theme="dark"]{
+    --bg:#0e1014; --surface:#161a21; --surface-2:#1b2029;
+    --text:#e9ecf1; --muted:#98a2b3; --border:#262c37;
+    --accent:#f89820; --accent-2:#7fb2e0; --done:#4ade80;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+    --shadow-lg:0 4px 8px rgba(0,0,0,.35), 0 24px 48px -20px rgba(0,0,0,.7);
+
+    --c-projects:#7fb2e0;
+    --c-projects-2:#a5c9e8;
+    --c-algorithms:#4ade80;
+    --c-algorithms-2:#86efac;
+    --c-stack:#f89820;
+    --c-stack-2:#fbbf24;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+
+  /* Subtle background texture */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-1; pointer-events:none;
+    background:
+      radial-gradient(1200px 600px at 10% -10%, color-mix(in srgb, var(--accent) 8%, transparent), transparent 60%),
+      radial-gradient(900px 500px at 100% 0%, color-mix(in srgb, var(--accent-2) 8%, transparent), transparent 60%);
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:1100px; margin:0 auto; padding:12px 20px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .brand{
+    font-weight:700; font-size:15px; letter-spacing:-.01em;
+    display:flex; align-items:center; gap:9px; margin-right:auto;
+  }
+  .brand .dot{
+    width:11px; height:11px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  }
+  .brand small{color:var(--muted); font-weight:500; display:block; font-size:12px; line-height:1.2}
+
+  .btn{
+    appearance:none; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:13px; font-weight:600;
+    padding:7px 13px; border-radius:9px; cursor:pointer;
+    transition:background .15s, border-color .15s, transform .08s;
+    text-decoration:none; display:inline-flex; align-items:center; gap:6px;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--surface-2); border-color:var(--accent-2)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1100px; margin:0 auto; padding:56px 20px 100px}
+
+  /* ---------- Hero ---------- */
+  .hero{margin-bottom:56px; max-width:820px}
+  .hero .eyebrow{
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .hero .eyebrow::before{
+    content:""; width:24px; height:1px; background:var(--border);
+  }
+  .hero h1{
+    font-size:clamp(32px,5.2vw,52px); line-height:1.08;
+    letter-spacing:-.03em; margin:0 0 20px; font-weight:800;
+  }
+  .hero h1 span{
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{
+    color:var(--muted); font-size:19px; margin:0 0 10px;
+    max-width:66ch; line-height:1.55;
+  }
+
+  /* ---------- Overall progress ---------- */
+  .overall{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:28px 30px;
+    margin-bottom:56px; box-shadow:var(--shadow);
+    position:relative; overflow:hidden;
+  }
+  .overall::before{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 7%, transparent),
+      transparent 50%);
+    pointer-events:none;
+  }
+  .overall-inner{position:relative}
+  .overall-head{
+    display:flex; align-items:baseline; gap:16px;
+    flex-wrap:wrap; margin-bottom:18px;
+  }
+  .overall-head h2{
+    font-size:15px; font-weight:750; letter-spacing:-.01em;
+    margin:0; color:var(--text);
+  }
+  .overall-head .hint{
+    font-size:13.5px; color:var(--muted);
+  }
+  .overall-head .pct{
+    margin-left:auto; font-family:var(--mono);
+    font-size:34px; font-weight:750; letter-spacing:-.02em;
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    line-height:1;
+  }
+  .overall-bar{
+    height:14px; background:var(--border); border-radius:99px;
+    overflow:hidden; position:relative;
+  }
+  .overall-bar > i{
+    display:block; height:100%; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    border-radius:99px; transition:width .5s ease;
+  }
+  .overall-meta{
+    display:flex; gap:22px; flex-wrap:wrap;
+    margin-top:18px; font-family:var(--mono); font-size:13px;
+    color:var(--muted); font-variant-numeric:tabular-nums;
+  }
+  .overall-meta strong{color:var(--text); font-weight:700}
+
+  /* ---------- Resource cards ---------- */
+  .resources-head{
+    display:flex; align-items:baseline; gap:14px;
+    flex-wrap:wrap; margin-bottom:22px;
+  }
+  .resources-head h2{
+    font-size:24px; margin:0; letter-spacing:-.02em; font-weight:750;
+  }
+  .resources-head p{
+    margin:0; color:var(--muted); font-size:15px;
+    flex:1 1 100%;
+  }
+
+  .grid{
+    display:grid; gap:18px;
+    grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));
+    margin-bottom:64px;
+  }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius-lg); padding:26px 26px 24px;
+    box-shadow:var(--shadow); display:flex; flex-direction:column;
+    position:relative; overflow:hidden;
+    transition:transform .2s ease, box-shadow .25s ease, border-color .2s ease;
+    text-decoration:none; color:inherit;
+  }
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:4px;
+    background:var(--card-accent);
+    transition:height .25s ease;
+  }
+  .card:hover{
+    transform:translateY(-3px);
+    box-shadow:var(--shadow-lg);
+    border-color:color-mix(in srgb, var(--card-accent) 55%, var(--border));
+  }
+  .card:hover::before{height:5px}
+
+  .card.projects{--card-accent:var(--c-projects)}
+  .card.algorithms{--card-accent:var(--c-algorithms)}
+  .card.stack{--card-accent:var(--c-stack)}
+
+  .card-icon{
+    width:56px; height:56px; border-radius:14px;
+    display:grid; place-content:center; font-size:26px;
+    background:color-mix(in srgb, var(--card-accent) 14%, var(--surface-2));
+    border:1px solid color-mix(in srgb, var(--card-accent) 28%, var(--border));
+    margin-bottom:18px;
+  }
+
+  .card-tag{
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:var(--card-accent); margin-bottom:8px;
+  }
+  .card h3{
+    margin:0 0 10px; font-size:22px; font-weight:750;
+    letter-spacing:-.018em; line-height:1.2;
+  }
+  .card .desc{
+    margin:0 0 20px; color:var(--muted); font-size:14.5px;
+    line-height:1.6; flex:1;
+  }
+
+  .card-stats{
+    display:flex; gap:16px; flex-wrap:wrap;
+    margin-bottom:18px; padding-bottom:18px;
+    border-bottom:1px solid var(--border);
+  }
+  .card-stats .stat{
+    display:flex; flex-direction:column; gap:2px;
+  }
+  .card-stats .stat .num{
+    font-family:var(--mono); font-size:22px; font-weight:750;
+    letter-spacing:-.02em; color:var(--text);
+    font-variant-numeric:tabular-nums; line-height:1;
+  }
+  .card-stats .stat .lbl{
+    font-size:11.5px; color:var(--muted); font-weight:600;
+    letter-spacing:.02em;
+  }
+
+  .card-progress{margin-bottom:18px}
+  .card-progress .row{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-bottom:8px; font-family:var(--mono); font-size:12px;
+    color:var(--muted); font-variant-numeric:tabular-nums;
+  }
+  .card-progress .row strong{
+    color:var(--text); font-weight:700; font-size:13px;
+  }
+  .card-bar{
+    height:8px; background:var(--border); border-radius:99px; overflow:hidden;
+  }
+  .card-bar > i{
+    display:block; height:100%; width:0%;
+    background:var(--card-accent);
+    border-radius:99px; transition:width .5s ease;
+  }
+  .card.algorithms .card-bar > i{
+    background:linear-gradient(90deg, var(--c-algorithms), var(--c-algorithms-2));
+  }
+  .card.projects .card-bar > i{
+    background:linear-gradient(90deg, var(--c-projects), var(--c-projects-2));
+  }
+  .card.stack .card-bar > i{
+    background:linear-gradient(90deg, var(--c-stack), var(--c-stack-2));
+  }
+
+  .card-cta{
+    display:inline-flex; align-items:center; gap:8px;
+    font-size:14.5px; font-weight:700; color:var(--card-accent);
+    margin-top:auto; transition:gap .2s ease;
+  }
+  .card:hover .card-cta{gap:12px}
+  .card-cta .arrow{
+    display:inline-block; transition:transform .2s ease;
+  }
+  .card:hover .card-cta .arrow{transform:translateX(3px)}
+
+  /* ---------- Flow section ---------- */
+  /*.flow{
+    background:linear-gradient(135deg,
+      color-mix(in srgb, var(--accent) 8%, var(--surface)),
+      var(--surface));
+    border:1px solid var(--border); border-radius:var(--radius-lg);
+    padding:32px 34px; box-shadow:var(--shadow);
+  }
+  .flow h2{
+    margin:0 0 8px; font-size:22px; letter-spacing:-.018em; font-weight:750;
+  }
+  .flow .sub{
+    margin:0 0 24px; color:var(--muted); font-size:15px; max-width:70ch;
+  }
+  .flow-steps{
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .step{
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:12px; padding:18px 20px; position:relative;
+  }
+  .step .n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:26px; height:26px; border-radius:50%;
+    background:var(--accent-2); color:#fff;
+    font-family:var(--mono); font-size:13px; font-weight:700;
+    margin-bottom:12px;
+  }
+  [data-theme="dark"] .step .n{color:#0e1014}
+  .step h4{
+    margin:0 0 6px; font-size:15.5px; font-weight:750;
+    letter-spacing:-.01em;
+  }
+  .step p{
+    margin:0; font-size:13.8px; color:var(--muted); line-height:1.55;
+  }
+  .step p b{color:var(--text); font-weight:700}*/
+
+  /* ---------- Flow section ---------- */
+  .flow{
+    background:
+            radial-gradient(900px 300px at 0% 0%,
+            color-mix(in srgb, var(--accent) 10%, transparent),
+            transparent 60%),
+            radial-gradient(700px 300px at 100% 100%,
+            color-mix(in srgb, var(--accent-2) 10%, transparent),
+            transparent 60%),
+            var(--surface);
+    border:1px solid var(--border);
+    border-radius:var(--radius-lg);
+    padding:36px 38px 40px;
+    box-shadow:var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+
+  /* Decorative top-right glow */
+  .flow::after{
+    content:"";
+    position:absolute; top:-80px; right:-80px;
+    width:220px; height:220px; border-radius:50%;
+    background:radial-gradient(circle,
+    color-mix(in srgb, var(--accent-2) 18%, transparent),
+    transparent 70%);
+    pointer-events:none;
+  }
+
+  .flow-head{
+    margin-bottom:32px;
+    position:relative;
+    max-width:64ch;
+  }
+  .flow-eyebrow{
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:var(--mono); font-size:11.5px; font-weight:700;
+    letter-spacing:.14em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:14px;
+  }
+  .flow-line{
+    display:inline-block; width:28px; height:1.5px;
+    background:linear-gradient(90deg, var(--accent), var(--accent-2));
+    border-radius:2px;
+  }
+  .flow-head h2{
+    margin:0 0 10px; font-size:26px; line-height:1.2;
+    letter-spacing:-.022em; font-weight:750;
+    color:var(--text);
+  }
+  .flow-head .sub{
+    margin:0; color:var(--muted); font-size:15.5px;
+    line-height:1.6;
+  }
+
+  /* ---------- Step grid ---------- */
+  .flow-steps{
+    display:grid; gap:16px;
+    grid-template-columns:repeat(2, 1fr);
+    position:relative;
+  }
+
+  /* ---------- Step card ---------- */
+  .step{
+    --step-accent:var(--accent-2);
+    position:relative;
+    background:color-mix(in srgb, var(--surface-2) 92%, var(--step-accent) 3%);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:22px 24px 22px 24px;
+    transition:
+            border-color .2s ease,
+            background .2s ease,
+            transform .18s ease,
+            box-shadow .2s ease;
+  }
+  .step::before{
+    content:"";
+    position:absolute; left:0; top:22px; bottom:22px;
+    width:3px; border-radius:0 3px 3px 0;
+    background:var(--step-accent);
+    opacity:.85;
+    transition:top .2s ease, bottom .2s ease, opacity .2s ease;
+  }
+  .step:hover{
+    border-color:color-mix(in srgb, var(--step-accent) 45%, var(--border));
+    background:color-mix(in srgb, var(--surface-2) 88%, var(--step-accent) 6%);
+    transform:translateY(-2px);
+    box-shadow:0 8px 24px -18px color-mix(in srgb, var(--step-accent) 60%, transparent);
+  }
+  .step:hover::before{
+    top:16px; bottom:16px; opacity:1;
+  }
+
+  .step-top{
+    display:flex; align-items:center; gap:12px;
+    margin-bottom:14px;
+  }
+
+  .step .n{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:38px; height:38px; border-radius:11px;
+    font-family:var(--mono); font-size:14px; font-weight:800;
+    letter-spacing:.02em;
+    color:var(--step-accent);
+    background:color-mix(in srgb, var(--step-accent) 12%, var(--surface));
+    border:1px solid color-mix(in srgb, var(--step-accent) 30%, var(--border));
+    flex:none;
+    transition:background .2s ease, transform .2s ease;
+  }
+  .step:hover .n{
+    background:color-mix(in srgb, var(--step-accent) 18%, var(--surface));
+    transform:scale(1.04);
+  }
+
+  .step-tag{
+    font-family:var(--mono); font-size:10.5px; font-weight:700;
+    letter-spacing:.09em; text-transform:uppercase;
+    color:var(--muted);
+    padding:3px 9px; border-radius:5px;
+    background:color-mix(in srgb, var(--step-accent) 7%, transparent);
+    border:1px solid color-mix(in srgb, var(--step-accent) 20%, transparent);
+    color:var(--step-accent);
+    white-space:nowrap;
+  }
+
+  .step h4{
+    margin:0 0 8px; font-size:17px; font-weight:750;
+    letter-spacing:-.014em; line-height:1.3;
+    color:var(--text);
+  }
+  .step p{
+    margin:0; font-size:14.5px; color:var(--muted);
+    line-height:1.62;
+  }
+  .step p b{color:var(--text); font-weight:700}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:640px){
+    .flow{padding:26px 20px 30px}
+    .flow-head h2{font-size:22px}
+    .flow-steps{grid-template-columns:1fr; gap:12px}
+    .step{padding:18px 20px}
+    .step-top{margin-bottom:12px}
+    .step .n{width:34px; height:34px; font-size:13px}
+  }
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:1100px; margin:0 auto; padding:0 20px 80px;
+    color:var(--muted); font-size:13.5px; text-align:center;
+  }
+  footer p{margin:6px 0}
+
+  /* ---------- Toast ---------- */
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translate(-50%,90px);
+    background:var(--text); color:var(--bg);
+    padding:10px 18px; border-radius:99px; font-size:14px; font-weight:600;
+    opacity:0; pointer-events:none;
+    transition:transform .28s ease, opacity .28s ease; z-index:100;
+    white-space:nowrap;
+  }
+  .toast.show{transform:translate(-50%,0); opacity:1}
+
+  /* ---------- Responsive ---------- */
+  @media (max-width:560px){
+    .topbar-inner{padding:10px 14px}
+    .brand small{display:none}
+    main{padding:32px 14px 80px}
+    .hero p{font-size:17px}
+    .overall{padding:22px 20px}
+    .overall-head .pct{font-size:28px}
+    .grid{grid-template-columns:1fr; gap:14px}
+    .card{padding:22px 20px}
+    .flow{padding:24px 20px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Java Journey<small>Projects · Algorithms · Stack Atlas</small></span>
+    </div>
+
+    <button class="btn ghost" id="themeBtn" title="Toggle theme">🌙 Dark</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <div class="eyebrow">Home</div>
+    <h1>Your complete <span>Java learning path</span>, in three checklists.</h1>
+    <p>
+      Build real projects, drill the interview algorithms, and look up every concept
+      along the way. Progress from each checklist is tracked locally and summarised here.
+    </p>
+  </section>
+
+  <!-- ============ OVERALL PROGRESS ============ -->
+  <section class="overall" aria-label="Overall progress">
+    <div class="overall-inner">
+      <div class="overall-head">
+        <h2>Overall progress</h2>
+        <span class="hint" id="overallHint">Loading…</span>
+        <span class="pct" id="overallPct">0%</span>
+      </div>
+      <div class="overall-bar" role="progressbar" aria-label="Combined progress">
+        <i id="overallBar"></i>
+      </div>
+      <div class="overall-meta">
+        <span><strong id="overallDone">0</strong> items completed</span>
+        <span><strong id="overallTotal">0</strong> total items</span>
+        <span id="overallBreakdown"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RESOURCE CARDS ============ -->
+  <section aria-label="Checklists">
+    <div class="resources-head">
+      <h2>Open a checklist</h2>
+      <p>Each one is standalone — progress saves in your browser and syncs with this page automatically.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- Projects -->
+      <a class="card projects" href="projects.html">
+        <div class="card-icon">🏗️</div>
+        <div class="card-tag">Projects</div>
+        <h3>Java Project Library</h3>
+        <p class="desc">
+          120 projects from "hello world" to a production-shaped capstone.
+          Twelve tiers, three tracks (full-stack, distributed, architecture),
+          and a portfolio project you can put on your CV.
+        </p>
+
+        <div class="card-stats">
+          <div class="stat"><span class="num">120</span><span class="lbl">Projects</span></div>
+          <div class="stat"><span class="num">12</span><span class="lbl">Tiers</span></div>
+          <div class="stat"><span class="num">3</span><span class="lbl">Tracks</span></div>
+        </div>
+
+        <div class="card-progress">
+          <div class="row">
+            <span id="projectsStatus">0 / 120</span>
+            <strong id="projectsPct">0%</strong>
+          </div>
+          <div class="card-bar"><i id="projectsBar"></i></div>
+        </div>
+
+        <span class="card-cta">Open project checklist <span class="arrow">→</span></span>
+      </a>
+
+      <!-- Algorithms -->
+      <a class="card algorithms" href="algorithms.html">
+        <div class="card-icon">🧠</div>
+        <div class="card-tag">Algorithms</div>
+        <h3>Algorithms Interview Checklist</h3>
+        <p class="desc">
+          177 problems across 16 topics — Big-O, arrays, graphs, DP, and
+          Java-flavored design rounds. Each one shows the technique, with
+          difficulty filters and full-text search.
+        </p>
+
+        <div class="card-stats">
+          <div class="stat"><span class="num">177</span><span class="lbl">Problems</span></div>
+          <div class="stat"><span class="num">16</span><span class="lbl">Topics</span></div>
+          <div class="stat"><span class="num">3</span><span class="lbl">Levels</span></div>
+        </div>
+
+        <div class="card-progress">
+          <div class="row">
+            <span id="algorithmsStatus">0 / 177</span>
+            <strong id="algorithmsPct">0%</strong>
+          </div>
+          <div class="card-bar"><i id="algorithmsBar"></i></div>
+        </div>
+
+        <span class="card-cta">Open algorithms checklist <span class="arrow">→</span></span>
+      </a>
+
+      <!-- Stack -->
+      <a class="card stack" href="stack.html">
+        <div class="card-icon">🗺️</div>
+        <div class="card-tag">Reference</div>
+        <h3>Stack Atlas</h3>
+        <p class="desc">
+          Every language feature, library, tool, and pattern from the projects,
+          organised by depth (Foundation → Expert) and linked back to the
+          projects that exercise it. Searchable reference.
+        </p>
+
+        <div class="card-stats">
+          <div class="stat"><span class="num">18</span><span class="lbl">Domains</span></div>
+          <div class="stat"><span class="num">100+</span><span class="lbl">Concepts</span></div>
+          <div class="stat"><span class="num">4</span><span class="lbl">Levels</span></div>
+        </div>
+
+        <div class="card-progress">
+          <div class="row">
+            <span>Reference only — no checklist</span>
+            <strong>—</strong>
+          </div>
+          <div class="card-bar" style="opacity:.45"><i style="width:100%;background:linear-gradient(90deg, var(--c-stack), var(--c-stack-2))"></i></div>
+        </div>
+
+        <span class="card-cta">Open stack atlas <span class="arrow">→</span></span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- ============ RECOMMENDED FLOW ============ -->
+  <section class="flow">
+    <div class="flow-head">
+      <div class="flow-eyebrow">
+        <span class="flow-line"></span>
+        How to use them together
+      </div>
+      <h2>The loop that ties all three together</h2>
+      <p class="sub">
+        Build something, look up what you touch, drill the patterns underneath,
+        then ship it where people can see it. Each step feeds the next.
+      </p>
+    </div>
+
+    <div class="flow-steps">
+      <div class="step" style="--step-accent: var(--c-projects)">
+        <div class="step-top">
+          <div class="n">01</div>
+          <div class="step-tag">Project Checklist</div>
+        </div>
+        <h4>Pick a project &amp; build</h4>
+        <p>
+          Follow the tiers in order — each project introduces new concepts
+          on top of the previous ones, so nothing feels out of reach.
+        </p>
+      </div>
+
+      <div class="step" style="--step-accent: var(--c-stack)">
+        <div class="step-top">
+          <div class="n">02</div>
+          <div class="step-tag">Stack Atlas</div>
+        </div>
+        <h4>Look up what you meet</h4>
+        <p>
+          Unfamiliar concept? Search the atlas. Every entry shows the projects
+          that use it, so you always see it in context.
+        </p>
+      </div>
+
+      <div class="step" style="--step-accent: var(--c-algorithms)">
+        <div class="step-top">
+          <div class="n">03</div>
+          <div class="step-tag">Algorithms</div>
+        </div>
+        <h4>Drill patterns in parallel</h4>
+        <p>
+          30–60 minutes a day. One Easy plus one Medium, and re-solve anything
+          you couldn't finish cold — that's where retention lives.
+        </p>
+      </div>
+
+      <div class="step" style="--step-accent: var(--accentnew)">
+        <div class="step-top">
+          <div class="n">04</div>
+          <div class="step-tag">Capstone</div>
+        </div>
+        <h4>Finish a real system</h4>
+        <p>
+          After tier 6, pick one vertical and go deep. The Architecture Capstone
+          is the project recruiters actually ask about.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>Progress is stored in your browser only — no accounts, no server.</p>
+  <p style="opacity:.7;margin-top:8px">297 trackable items · 3 checklists · 1 Java journey</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var THEME_KEY = 'java-journey-home-theme-v1';
+
+  /* ---------- Storage keys per checklist ---------- */
+  var PROJECTS_KEY   = 'java-project-checklist-v3';
+  var ALGORITHMS_KEY = 'algorithms-checklist-v1';
+
+  var PROJECTS_TOTAL   = 120;
+  var ALGORITHMS_TOTAL = 177;
+
+  /* ---------- Helpers ---------- */
+  function readCount(key) {
+    try {
+      var raw = localStorage.getItem(key);
+      if (!raw) return 0;
+      var obj = JSON.parse(raw);
+      if (!obj || typeof obj !== 'object') return 0;
+      return Object.keys(obj).length;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  function pct(done, total) {
+    if (!total) return 0;
+    return Math.round((done / total) * 100);
+  }
+
+  /* ---------- DOM refs ---------- */
+  var overallBar    = document.getElementById('overallBar');
+  var overallPct    = document.getElementById('overallPct');
+  var overallDone   = document.getElementById('overallDone');
+  var overallTotal  = document.getElementById('overallTotal');
+  var overallHint   = document.getElementById('overallHint');
+  var overallBreak  = document.getElementById('overallBreakdown');
+
+  var projectsStatus = document.getElementById('projectsStatus');
+  var projectsPct    = document.getElementById('projectsPct');
+  var projectsBar    = document.getElementById('projectsBar');
+
+  var algorithmsStatus = document.getElementById('algorithmsStatus');
+  var algorithmsPct    = document.getElementById('algorithmsPct');
+  var algorithmsBar    = document.getElementById('algorithmsBar');
+
+  /* ---------- Render ---------- */
+  function render() {
+    var pDone = Math.min(readCount(PROJECTS_KEY), PROJECTS_TOTAL);
+    var aDone = Math.min(readCount(ALGORITHMS_KEY), ALGORITHMS_TOTAL);
+
+    var totalItems = PROJECTS_TOTAL + ALGORITHMS_TOTAL;
+    var doneItems  = pDone + aDone;
+    var overall    = pct(doneItems, totalItems);
+
+    // Overall
+    overallBar.style.width = overall + '%';
+    overallPct.textContent = overall + '%';
+    overallDone.textContent = doneItems;
+    overallTotal.textContent = totalItems;
+
+    if (doneItems === 0) {
+      overallHint.textContent = 'Nothing ticked yet — start with any checklist.';
+    } else if (overall === 100) {
+      overallHint.textContent = 'Everything complete. Time for the capstone.';
+    } else {
+      overallHint.textContent = doneItems + ' done across both checklists.';
+    }
+
+    overallBreak.textContent =
+      'Projects ' + pDone + '/' + PROJECTS_TOTAL +
+      ' · Algorithms ' + aDone + '/' + ALGORITHMS_TOTAL;
+
+    // Projects card
+    projectsStatus.textContent = pDone + ' / ' + PROJECTS_TOTAL;
+    projectsPct.textContent = pct(pDone, PROJECTS_TOTAL) + '%';
+    projectsBar.style.width = pct(pDone, PROJECTS_TOTAL) + '%';
+
+    // Algorithms card
+    algorithmsStatus.textContent = aDone + ' / ' + ALGORITHMS_TOTAL;
+    algorithmsPct.textContent = pct(aDone, ALGORITHMS_TOTAL) + '%';
+    algorithmsBar.style.width = pct(aDone, ALGORITHMS_TOTAL) + '%';
+  }
+
+  /* ---------- Toast ---------- */
+  var toastEl = document.getElementById('toast');
+  var toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1600);
+  }
+
+  /* ---------- Theme ---------- */
+  var themeBtn = document.getElementById('themeBtn');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+  var saved;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+  if (!saved) {
+    saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark' : 'light';
+  }
+  setTheme(saved);
+
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- Re-render when returning from a checklist ---------- */
+  document.addEventListener('visibilitychange', function () {
+    if (!document.hidden) render();
+  });
+  window.addEventListener('focus', render);
+
+  // Listen for storage changes (works if checklists are open in other tabs)
+  window.addEventListener('storage', function (e) {
+    if (e.key === PROJECTS_KEY || e.key === ALGORITHMS_KEY) {
+      render();
+    }
+  });
+
+  /* ---------- Init ---------- */
+  render();
+})();
+</script>
+</body>
+</html>

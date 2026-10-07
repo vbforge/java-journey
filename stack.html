@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Java Learning Path — Technologies, Concepts &amp; Stacks (Projects 1–120)</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfbfc;
+    --text:#16181d; --muted:#697386; --border:#e4e7ec;
+    --accent:#f89820; --accent-2:#5382a1;
+    --l-foundation:#2b6cb0;
+    --l-core:#2c7a7b;
+    --l-advanced:#6b46c1;
+    --l-expert:#9b2c2c;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px -12px rgba(16,24,40,.25);
+    --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --topbar-h:76px;
+  }
+  [data-theme="dark"]{
+    --bg:#0e1014; --surface:#161a21; --surface-2:#1b2029;
+    --text:#e9ecf1; --muted:#98a2b3; --border:#262c37;
+    --accent:#f89820; --accent-2:#7fb2e0;
+    --l-foundation:#7fb2e0;
+    --l-core:#4fd1c5;
+    --l-advanced:#b794f4;
+    --l-expert:#fc8181;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:17px; line-height:1.65; -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Topbar ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:60;
+    background:color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto; padding:14px 24px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .brand{
+    font-weight:750; font-size:17px; letter-spacing:-.01em;
+    display:flex; align-items:center; gap:10px; margin-right:auto;
+    line-height:1.25;
+  }
+  .brand .dot{
+    width:13px; height:13px; border-radius:50%; flex:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-2) 18%, transparent);
+  }
+  .brand small{
+    color:var(--muted); font-weight:500; display:block;
+    font-size:13px; line-height:1.3; margin-top:1px;
+  }
+
+  .search{
+    position:relative; flex:1 1 280px; max-width:400px;
+  }
+  .search input{
+    width:100%; appearance:none;
+    border:1px solid var(--border); background:var(--surface-2);
+    color:var(--text); font:inherit; font-size:15px;
+    padding:10px 14px 10px 38px; border-radius:10px;
+    transition:border-color .15s, background .15s, box-shadow .15s;
+  }
+  .search input:focus{
+    outline:none; border-color:var(--accent-2);
+    background:var(--surface);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-2) 18%, transparent);
+  }
+  .search::before{
+    content:"⌕"; position:absolute; left:13px; top:50%;
+    transform:translateY(-50%); font-size:17px; color:var(--muted);
+    pointer-events:none;
+  }
+
+  .btn{
+    appearance:none; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:14.5px; font-weight:650;
+    padding:9px 16px; border-radius:10px; cursor:pointer;
+    transition:background .15s, border-color .15s, transform .08s;
+    white-space:nowrap;
+  }
+  .btn:hover{background:var(--surface-2); border-color:var(--accent-2)}
+  .btn:active{transform:translateY(1px)}
+
+  /* ---------- Home link ---------- */
+  .home-link{
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    color:var(--text);
+    transition:color .15s, background .15s, border-color .15s, transform .08s;
+  }
+  .home-link:hover{
+    color:var(--text);
+    background:var(--surface-2);
+    border-color:var(--accent-2);
+  }
+  .home-link:active{transform:translateY(1px)}
+  @media print{.home-link{display:none !important}}
+
+  /* ---------- Section nav ---------- */
+  .secnav{
+    border-bottom:1px solid var(--border);
+    background:color-mix(in srgb, var(--surface) 94%, transparent);
+    backdrop-filter:blur(14px);
+    position:sticky; top:var(--topbar-h); z-index:55;
+  }
+  .secnav-inner{
+    max-width:1180px; margin:0 auto; padding:11px 24px;
+    display:flex; gap:8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .secnav a{
+    font-size:14px; font-weight:650; color:var(--muted);
+    text-decoration:none; padding:7px 14px; border-radius:99px;
+    border:1px solid transparent;
+    transition:color .15s, background .15s, border-color .15s;
+  }
+  .secnav a:hover{color:var(--text); background:var(--surface-2); border-color:var(--border)}
+  .secnav a.active{color:var(--accent-2); border-color:currentColor; background:color-mix(in srgb, var(--accent-2) 8%, transparent)}
+  .secnav a .n{
+    font-family:var(--mono); font-size:11.5px; opacity:.55;
+    margin-right:6px; font-weight:700;
+  }
+
+  /* ---------- Layout ---------- */
+  main{max-width:1180px; margin:0 auto; padding:48px 24px 110px}
+
+  .hero{margin-bottom:44px}
+  .hero h1{
+    font-size:clamp(32px,4.6vw,46px); line-height:1.12;
+    letter-spacing:-.028em; margin:0 0 18px; font-weight:800;
+  }
+  .hero h1 span{
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{color:var(--muted); font-size:18.5px; margin:0 0 10px; max-width:72ch; line-height:1.6}
+
+  .legend-row{
+    display:flex; gap:20px; flex-wrap:wrap; margin:26px 0 0;
+    font-size:14.5px; color:var(--muted);
+  }
+  .legend-row span{display:flex; align-items:center; gap:8px}
+  .legend-row i{width:12px; height:12px; border-radius:3px; display:inline-block}
+  .lv-foundation i{background:var(--l-foundation)}
+  .lv-core i{background:var(--l-core)}
+  .lv-advanced i{background:var(--l-advanced)}
+  .lv-expert i{background:var(--l-expert)}
+
+  /* ---------- Tier overview ---------- */
+  .overview{margin:52px 0 24px}
+  .overview h2{
+    font-size:23px; letter-spacing:-.018em; font-weight:750;
+    margin:0 0 8px;
+  }
+  .overview > p{color:var(--muted); font-size:16px; margin:0 0 24px; max-width:76ch}
+
+  .tier-grid{
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fill, minmax(235px, 1fr));
+  }
+  .tier-card{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:16px 18px;
+    box-shadow:var(--shadow);
+    border-left:4px solid var(--accent-2);
+  }
+  .tier-card.t1{border-left-color:#2b6cb0}
+  .tier-card.t2{border-left-color:#2c7a7b}
+  .tier-card.t3{border-left-color:#2f855a}
+  .tier-card.t4{border-left-color:#6b46c1}
+  .tier-card.t5{border-left-color:#b83280}
+  .tier-card.t6{border-left-color:#c05621}
+  .tier-card.t7{border-left-color:#9b2c2c}
+  .tier-card.t8{border-left-color:#742a2a}
+  .tier-card.t9{border-left-color:#553c9a}
+  .tier-card.t10{border-left-color:#1a202c}
+  .tier-card.t11{border-left-color:#285e61}
+  .tier-card.t12{border-left-color:#4c1d95}
+  [data-theme="dark"] .tier-card.t10{border-left-color:#a0aec0}
+
+  .tier-card .t-num{
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px;
+  }
+  .tier-card h3{
+    margin:0 0 8px; font-size:16px; font-weight:750;
+    letter-spacing:-.012em; line-height:1.3;
+  }
+  .tier-card p{
+    margin:0; font-size:14px; color:var(--muted); line-height:1.55;
+  }
+  .tier-card .t-pj{
+    display:inline-block; margin-top:10px;
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    color:var(--accent-2); border:1px solid var(--border);
+    background:var(--surface-2);
+    padding:2px 8px; border-radius:5px;
+  }
+
+  /* ---------- Domain overview (clickable) ---------- */
+  .domain-overview{margin:24px 0 60px}
+  .domain-overview h2{
+    font-size:23px; letter-spacing:-.018em; font-weight:750;
+    margin:0 0 8px;
+  }
+  .domain-overview .overview-sub{
+    color:var(--muted); font-size:16px; margin:0 0 24px; max-width:76ch;
+  }
+  .domain-grid{
+    display:grid; gap:14px;
+    grid-template-columns:repeat(auto-fill, minmax(235px, 1fr));
+  }
+  .domain-card{
+    --domain-color:var(--accent-2);
+    appearance:none; text-align:left; font:inherit; cursor:pointer;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:16px 18px;
+    box-shadow:var(--shadow);
+    border-left:4px solid var(--domain-color);
+    transition:border-color .15s, transform .12s, background .15s, box-shadow .15s;
+    color:var(--text);
+    display:flex; flex-direction:column;
+  }
+  .domain-card:hover{
+    transform:translateY(-2px);
+    border-color:color-mix(in srgb, var(--domain-color) 55%, var(--border));
+    box-shadow:0 4px 10px rgba(16,24,40,.08), 0 12px 28px -14px rgba(16,24,40,.3);
+  }
+  .domain-card:active{transform:translateY(0)}
+  .domain-card[data-domain-color="1"]{--domain-color:#2b6cb0}
+  .domain-card[data-domain-color="2"]{--domain-color:#2c7a7b}
+  .domain-card[data-domain-color="3"]{--domain-color:#2f855a}
+  .domain-card[data-domain-color="4"]{--domain-color:#6b46c1}
+  .domain-card[data-domain-color="5"]{--domain-color:#b83280}
+  .domain-card[data-domain-color="6"]{--domain-color:#c05621}
+  .domain-card[data-domain-color="7"]{--domain-color:#9b2c2c}
+  .domain-card[data-domain-color="8"]{--domain-color:#742a2a}
+  .domain-card[data-domain-color="9"]{--domain-color:#553c9a}
+  .domain-card[data-domain-color="10"]{--domain-color:#285e61}
+  .domain-card[data-domain-color="11"]{--domain-color:#4c1d95}
+  .domain-card[data-domain-color="12"]{--domain-color:#1e40af}
+  .domain-card[data-domain-color="13"]{--domain-color:#92400e}
+  .domain-card[data-domain-color="14"]{--domain-color:#065f46}
+  .domain-card[data-domain-color="15"]{--domain-color:#831843}
+  .domain-card[data-domain-color="16"]{--domain-color:#111827}
+  .domain-card[data-domain-color="17"]{--domain-color:#4c51bf}
+  .domain-card[data-domain-color="18"]{--domain-color:#9d174d}
+  [data-theme="dark"] .domain-card[data-domain-color="16"]{--domain-color:#a0aec0}
+  .domain-card.selected{
+    background:color-mix(in srgb, var(--domain-color) 12%, var(--surface));
+    border-color:var(--domain-color);
+    box-shadow:0 0 0 1px var(--domain-color),
+               0 4px 12px -4px color-mix(in srgb, var(--domain-color) 50%, transparent);
+  }
+  .domain-card .dc-num{
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    letter-spacing:.07em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:6px;
+  }
+  .domain-card h3{
+    margin:0 0 8px; font-size:16px; font-weight:750;
+    letter-spacing:-.012em; line-height:1.3;
+  }
+  .domain-card p{
+    margin:0 0 12px; font-size:14px; color:var(--muted); line-height:1.5;
+    flex:1;
+  }
+  .domain-card .dc-levels{
+    display:flex; gap:4px; flex-wrap:wrap;
+  }
+  .domain-card .dc-lvl{
+    font-family:var(--mono); font-size:9.5px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase;
+    padding:2px 6px; border-radius:4px;
+    border:1px solid;
+    white-space:nowrap;
+  }
+  .domain-card .dc-lvl.foundation{
+    color:var(--l-foundation);
+    border-color:color-mix(in srgb, var(--l-foundation) 40%, transparent);
+    background:color-mix(in srgb, var(--l-foundation) 10%, transparent);
+  }
+  .domain-card .dc-lvl.core{
+    color:var(--l-core);
+    border-color:color-mix(in srgb, var(--l-core) 40%, transparent);
+    background:color-mix(in srgb, var(--l-core) 10%, transparent);
+  }
+  .domain-card .dc-lvl.advanced{
+    color:var(--l-advanced);
+    border-color:color-mix(in srgb, var(--l-advanced) 40%, transparent);
+    background:color-mix(in srgb, var(--l-advanced) 10%, transparent);
+  }
+  .domain-card .dc-lvl.expert{
+    color:var(--l-expert);
+    border-color:color-mix(in srgb, var(--l-expert) 40%, transparent);
+    background:color-mix(in srgb, var(--l-expert) 10%, transparent);
+  }
+
+  /* Filter status */
+  .domain-filter-status{
+    font-family:var(--mono); font-size:12px;
+    color:var(--muted); margin-top:18px;
+    font-variant-numeric:tabular-nums;
+    display:none; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .domain-filter-status.has-filters{
+    display:flex;
+    color:var(--accent-2);
+  }
+  .domain-filter-status .dfs-clear{
+    appearance:none; background:transparent;
+    border:1px dashed var(--border); border-radius:99px;
+    font:inherit; font-size:11.5px; font-weight:600;
+    color:var(--muted); cursor:pointer;
+    padding:4px 12px;
+    transition:border-color .15s, color .15s;
+  }
+  .domain-filter-status .dfs-clear:hover{
+    border-color:var(--accent-2); color:var(--accent-2);
+  }
+
+  /* ---------- Domain section ---------- */
+  .domain{
+    margin-bottom:60px;
+    scroll-margin-top:160px;
+  }
+  .domain-head{
+    display:flex; align-items:baseline; gap:14px; flex-wrap:wrap;
+    padding-bottom:14px; margin-bottom:8px;
+    border-bottom:2px solid var(--border);
+  }
+  .domain-num{
+    font-family:var(--mono); font-size:12.5px; font-weight:700;
+    color:#fff; background:var(--accent-2);
+    padding:5px 11px; border-radius:6px; align-self:center;
+  }
+  .domain-head h2{
+    font-size:24px; margin:0; letter-spacing:-.018em;
+    font-weight:750; flex:1 1 auto;
+  }
+  .domain-when{
+    font-family:var(--mono); font-size:13px; color:var(--muted);
+    align-self:center; font-variant-numeric:tabular-nums;
+  }
+  .domain-desc{
+    color:var(--muted); font-size:16.5px;
+    margin:14px 0 24px; max-width:80ch; line-height:1.6;
+  }
+
+  /* ---------- Concept list ---------- */
+  .concepts{
+    display:flex; flex-direction:column; gap:8px;
+  }
+
+  .concept{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:16px 20px;
+    display:grid;
+    grid-template-columns:112px 1fr;
+    gap:0 20px;
+    transition:border-color .15s, background .15s, box-shadow .15s;
+  }
+  .concept:hover{
+    border-color:color-mix(in srgb,var(--accent-2) 45%, var(--border));
+    box-shadow:0 2px 4px rgba(16,24,40,.04), 0 8px 24px -16px rgba(16,24,40,.2);
+  }
+
+  .c-level{
+    display:flex; align-items:flex-start; padding-top:3px;
+  }
+  .c-level span{
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.07em; text-transform:uppercase;
+    padding:4px 9px; border-radius:5px;
+    white-space:nowrap;
+  }
+  .concept[data-level="foundation"] .c-level span{
+    color:var(--l-foundation);
+    background:color-mix(in srgb, var(--l-foundation) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--l-foundation) 35%, transparent);
+  }
+  .concept[data-level="core"] .c-level span{
+    color:var(--l-core);
+    background:color-mix(in srgb, var(--l-core) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--l-core) 35%, transparent);
+  }
+  .concept[data-level="advanced"] .c-level span{
+    color:var(--l-advanced);
+    background:color-mix(in srgb, var(--l-advanced) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--l-advanced) 35%, transparent);
+  }
+  .concept[data-level="expert"] .c-level span{
+    color:var(--l-expert);
+    background:color-mix(in srgb, var(--l-expert) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--l-expert) 35%, transparent);
+  }
+
+  .c-body{min-width:0}
+  .c-body h4{
+    margin:0 0 6px; font-size:17px; font-weight:700;
+    letter-spacing:-.008em; line-height:1.35;
+  }
+  .c-body h4 code{
+    font-family:var(--mono); font-size:14.5px;
+    background:var(--surface-2); border:1px solid var(--border);
+    padding:1px 6px; border-radius:4px;
+  }
+  .c-body p{
+    margin:0; font-size:15px; color:var(--muted);
+    line-height:1.6; max-width:84ch;
+  }
+  .c-body p code, .c-body .inline-code{
+    font-family:var(--mono); font-size:13.5px;
+    background:var(--surface-2); border:1px solid var(--border);
+    padding:1px 6px; border-radius:4px; color:var(--text);
+  }
+
+  .c-projects{
+    margin-top:10px; display:flex; gap:5px; flex-wrap:wrap;
+    align-items:center;
+  }
+  .c-projects .lbl{
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    color:var(--muted); letter-spacing:.05em;
+    text-transform:uppercase; margin-right:3px;
+  }
+  .pj{
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    padding:3px 8px; border-radius:5px;
+    background:var(--surface-2); color:var(--accent-2);
+    border:1px solid var(--border);
+    cursor:help; transition:background .15s, border-color .15s, transform .08s;
+  }
+  .pj:hover{
+    background:color-mix(in srgb, var(--accent-2) 15%, var(--surface-2));
+    border-color:var(--accent-2);
+    transform:translateY(-1px);
+  }
+
+  /* ---------- Search result states ---------- */
+  .concept.hidden, .domain.hidden{display:none !important}
+
+  .empty-state{
+    text-align:center; padding:70px 24px; color:var(--muted);
+    border:2px dashed var(--border); border-radius:var(--radius);
+    margin-top:24px; font-size:16px;
+  }
+  .empty-state strong{display:block; font-size:20px; color:var(--text); margin-bottom:8px}
+
+  /* ---------- Footer ---------- */
+  footer{
+    max-width:1180px; margin:0 auto; padding:0 24px 90px;
+    color:var(--muted); font-size:15px; text-align:center;
+  }
+
+  /* ---------- Scroll to top ---------- */
+  .totop{
+    position:fixed; bottom:28px; right:28px;
+    width:48px; height:48px; border-radius:50%;
+    background:var(--surface); border:1px solid var(--border);
+    color:var(--text); font-size:18px; cursor:pointer;
+    box-shadow:var(--shadow);
+    display:grid; place-content:center;
+    opacity:0; pointer-events:none;
+    transition:opacity .25s, transform .25s;
+    z-index:70;
+  }
+  .totop.show{opacity:1; pointer-events:auto}
+  .totop:hover{border-color:var(--accent-2); transform:translateY(-2px)}
+
+  /* ---------- Print ---------- */
+  @media print{
+    :root{
+      --bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb; --shadow:none;
+    }
+    [data-theme="dark"]{
+      --bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb;
+    }
+    body{font-size:10.5pt; background:#fff}
+    .topbar, .secnav, .totop, .no-print{display:none !important}
+    main{max-width:none; padding:0}
+    .concept, .tier-card, .domain-card{
+      break-inside:avoid; page-break-inside:avoid;
+      box-shadow:none; border-color:#ccc; padding:8px 11px;
+    }
+    .domain{break-inside:auto; margin-bottom:20px}
+    .domain-head{break-after:avoid; page-break-after:avoid}
+    .concept.hidden, .domain.hidden{display:block !important}
+    .concept.hidden{display:grid !important}
+    .c-level span{border-color:#999 !important; background:#f4f4f4 !important; color:#000 !important}
+    .pj{background:#f4f4f4; color:#000; border-color:#ccc}
+    .overview, .domain-overview{margin:20px 0}
+    .domain-overview{display:none !important}
+  }
+
+  @media (max-width:760px){
+    :root{--topbar-h:0px}
+    .topbar-inner{padding:12px 16px; gap:10px}
+    .brand small{display:none}
+    .search{flex-basis:100%; max-width:none; order:5}
+    .secnav{position:static; top:auto}
+    .secnav-inner{padding:10px 16px; gap:6px}
+    .secnav a{font-size:13px; padding:6px 12px}
+    main{padding:32px 16px 90px}
+    .hero h1{font-size:30px}
+    .hero p{font-size:16.5px}
+    .concept{grid-template-columns:1fr; gap:10px; padding:14px 16px}
+    .c-level{padding-top:0}
+    .domain-when{display:none}
+    .tier-grid, .domain-grid{grid-template-columns:1fr}
+    .overview h2, .domain-overview h2{font-size:20px}
+    .domain-head h2{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Java Learning Path<small>Stacks · Concepts · Projects 1–120</small></span>
+    </div>
+
+    <div class="search">
+      <input type="search" id="searchInput" placeholder="Search concepts, tools, stacks… (press /)" aria-label="Search concepts">
+    </div>
+
+    <a class="btn ghost home-link" href="index.html" title="Back to home">← Home</a>
+    <button class="btn" id="themeBtn" title="Toggle theme">🌙 Dark</button>
+    <button class="btn" id="printBtn" title="Print / Save as PDF">⬇ PDF</button>
+  </div>
+</header>
+
+<nav class="secnav no-print" aria-label="Sections">
+  <div class="secnav-inner" id="secnavInner">
+    <a href="#overview"><span class="n">00</span>Overview</a>
+    <a href="#d1"><span class="n">01</span>Java Core</a>
+    <a href="#d2"><span class="n">02</span>OOP</a>
+    <a href="#d3"><span class="n">03</span>Collections &amp; Streams</a>
+    <a href="#d4"><span class="n">04</span>Concurrency</a>
+    <a href="#d5"><span class="n">05</span>Networking</a>
+    <a href="#d6"><span class="n">06</span>Data &amp; DB</a>
+    <a href="#d7"><span class="n">07</span>Web &amp; APIs</a>
+    <a href="#d8"><span class="n">08</span>Spring</a>
+    <a href="#d9"><span class="n">09</span>Messaging</a>
+    <a href="#d10"><span class="n">10</span>Resilience</a>
+    <a href="#d11"><span class="n">11</span>Caching &amp; Search</a>
+    <a href="#d12"><span class="n">12</span>Testing</a>
+    <a href="#d13"><span class="n">13</span>Build Tools</a>
+    <a href="#d14"><span class="n">14</span>Observability</a>
+    <a href="#d15"><span class="n">15</span>Containers &amp; Cloud</a>
+    <a href="#d16"><span class="n">16</span>CI/CD</a>
+    <a href="#d17"><span class="n">17</span>Architecture</a>
+    <a href="#d18"><span class="n">18</span>Tools &amp; Practice</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- ============ HERO ============ -->
+  <section class="hero">
+    <h1>The <span>Stack Atlas</span> for your Java journey</h1>
+    <p>
+      Every language feature, library, tool, and pattern you'll touch across projects 1–120 —
+      arranged as a progressive path so you always know <em>what to learn next</em> and
+      <em>where you'll use it</em>.
+    </p>
+    <p>
+      Each concept is tagged by depth (Foundation → Core → Advanced → Expert) and linked to
+      the projects that exercise it. Use the search above to look up any technology, or
+      click a domain card below to jump in.
+    </p>
+
+    <div class="legend-row">
+      <span class="lv-foundation"><i></i>Foundation · Tiers 1–2</span>
+      <span class="lv-core"><i></i>Core · Tiers 3–6</span>
+      <span class="lv-advanced"><i></i>Advanced · Tiers 7–10</span>
+      <span class="lv-expert"><i></i>Expert · Tiers 11–12</span>
+    </div>
+  </section>
+
+  <!-- ============ TIER OVERVIEW ============ -->
+  <section class="overview" id="overview">
+    <h2>The 12-tier path at a glance</h2>
+    <p>Each tier introduces a new layer of the stack. Concepts below are colour-coded to match.</p>
+
+    <div class="tier-grid">
+      <div class="tier-card t1">
+        <div class="t-num">Tier 1 · P1–P12</div>
+        <h3>Absolute Basics</h3>
+        <p>Java syntax, control flow, methods, arrays, console I/O, the <code>javac</code>/<code>java</code> workflow.</p>
+        <span class="t-pj">P1–P12</span>
+      </div>
+      <div class="tier-card t2">
+        <div class="t-num">Tier 2 · P13–P25</div>
+        <h3>OOP &amp; Core Libraries</h3>
+        <p>Classes, interfaces, enums, collections, exceptions, the beginnings of real design.</p>
+        <span class="t-pj">P13–P25</span>
+      </div>
+      <div class="tier-card t3">
+        <div class="t-num">Tier 3 · P26–P33</div>
+        <h3>Collections, Streams &amp; Modern Java</h3>
+        <p>HashMap, streams, records, sealed types, pattern matching, generics, immutability.</p>
+        <span class="t-pj">P26–P33</span>
+      </div>
+      <div class="tier-card t4">
+        <div class="t-num">Tier 4 · P34–P43</div>
+        <h3>I/O, Data Structures &amp; Algorithms</h3>
+        <p>Files, NIO, streams over lines, the collections internals, sorting, Big-O.</p>
+        <span class="t-pj">P34–P43</span>
+      </div>
+      <div class="tier-card t5">
+        <div class="t-num">Tier 5 · P44–P52</div>
+        <h3>Concurrency &amp; Networking</h3>
+        <p>Threads, executors, sockets, HTTP clients, thread safety, deadlocks.</p>
+        <span class="t-pj">P44–P52</span>
+      </div>
+      <div class="tier-card t6">
+        <div class="t-num">Tier 6 · P53–P62</div>
+        <h3>Databases &amp; Persistence</h3>
+        <p>SQL, JDBC, connection pooling, transactions, Hibernate, JPA, migrations.</p>
+        <span class="t-pj">P53–P62</span>
+      </div>
+      <div class="tier-card t7">
+        <div class="t-num">Tier 7 · P63–P77</div>
+        <h3>Spring Boot &amp; Web</h3>
+        <p>REST, Spring MVC, Data JPA, validation, security basics, Thymeleaf, first portfolio.</p>
+        <span class="t-pj">P63–P77</span>
+      </div>
+      <div class="tier-card t8">
+        <div class="t-num">Tier 8 · P78–P84</div>
+        <h3>Spring Depth</h3>
+        <p>Security, OAuth2, AOP, Batch, async, GraphQL, gRPC.</p>
+        <span class="t-pj">P78–P84</span>
+      </div>
+      <div class="tier-card t9">
+        <div class="t-num">Tier 9 · P85–P98</div>
+        <h3>Engineering Craft</h3>
+        <p>Testing, Testcontainers, TDD, multi-module builds, quality gates, CI/CD, design patterns, hexagonal architecture.</p>
+        <span class="t-pj">P85–P98</span>
+      </div>
+      <div class="tier-card t10">
+        <div class="t-num">Tier 10 · P99–P108</div>
+        <h3>Distributed Systems</h3>
+        <p>Kafka, RabbitMQ, outbox, sagas, idempotency, resilience, distributed caching, multi-tenancy.</p>
+        <span class="t-pj">P99–P108</span>
+      </div>
+      <div class="tier-card t11">
+        <div class="t-num">Tier 11 · P109–P116</div>
+        <h3>Cloud, Ops &amp; Performance</h3>
+        <p>Docker, Kubernetes, AWS, observability, profiling, load testing, Nginx.</p>
+        <span class="t-pj">P109–P116</span>
+      </div>
+      <div class="tier-card t12">
+        <div class="t-num">Tier 12 · P117–P120</div>
+        <h3>Advanced &amp; Architecture</h3>
+        <p>WebFlux, virtual threads, Elasticsearch, DDD, capstone system design.</p>
+        <span class="t-pj">P117–P120</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DOMAIN OVERVIEW (clickable) ============ -->
+  <section class="domain-overview no-print" id="domainOverview">
+    <h2>Browse by domain — click a card to filter</h2>
+    <p class="overview-sub">Each domain groups related concepts by topic. Click to drill in, click again to show all.</p>
+    <div class="domain-grid" id="domainGrid"></div>
+    <div class="domain-filter-status" id="domainFilterStatus"></div>
+  </section>
+
+  <!-- ============ 01 JAVA CORE ============ -->
+  <section class="domain" id="d1">
+    <div class="domain-head">
+      <span class="domain-num">01</span>
+      <h2>Java Language &amp; Core Libraries</h2>
+      <span class="domain-when">Tiers 1–5, revisited throughout</span>
+    </div>
+    <p class="domain-desc">
+      The foundation everything else sits on. Learn it well early, then keep deepening
+      it — modern Java (17–21+) has features that change how you write everyday code.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Syntax, variables &amp; primitive types</h4>
+          <p>Declarations, <code>int</code>, <code>long</code>, <code>double</code>, <code>boolean</code>, <code>char</code>, type inference with <code>var</code> (Java 10+), casting and promotion.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Hello, World!">P1</span><span class="pj" title="Simple Calculator">P2</span><span class="pj" title="Number Guessing Game">P3</span><span class="pj" title="FizzBuzz">P4</span><span class="pj" title="Unit Converter">P7</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Control flow</h4>
+          <p><code>if</code>/<code>else</code>, <code>switch</code> (statement &amp; expression), <code>for</code>, <code>while</code>, <code>do-while</code>, <code>break</code>/<code>continue</code>, labelled loops.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="FizzBuzz">P4</span><span class="pj" title="Simple Calculator">P2</span><span class="pj" title="Number Guessing Game">P3</span><span class="pj" title="Grade Analyzer">P8</span><span class="pj" title="Multiplication Table & Star Patterns">P9</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Methods &amp; parameter passing</h4>
+          <p>Signature, overloading, varargs, pass-by-value semantics for primitives and references, return values.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="To-Do List (In-Memory)">P5</span><span class="pj" title="Palindrome Checker">P6</span><span class="pj" title="Array Toolkit">P10</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Strings &amp; text handling</h4>
+          <p><code>String</code> immutability, <code>StringBuilder</code>, formatting, comparing with <code>equals</code> vs <code>==</code>, <code>String.format</code>, text blocks (Java 15+).</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Palindrome Checker">P6</span><span class="pj" title="Hangman">P17</span><span class="pj" title="CSV &amp; JSON Parser">P35</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Arrays &amp; 2D arrays</h4>
+          <p>Declaration, initialisation, iteration, <code>Arrays</code> utility methods, multi-dimensional arrays for grids.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Grade Analyzer">P8</span><span class="pj" title="Array Toolkit">P10</span><span class="pj" title="Tic-Tac-Toe (Console)">P11</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Exception handling</h4>
+          <p>Checked vs unchecked, custom exceptions, try-with-resources, exception chaining, when to wrap and when to let propagate.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Banking System">P14</span><span class="pj" title="Custom Exceptions Toolkit">P22</span><span class="pj" title="Persistent To-Do List">P34</span><span class="pj" title="RESTful To-Do API">P63</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>File I/O — <code>java.io</code></h4>
+          <p><code>FileReader</code>, <code>BufferedReader</code>, <code>FileWriter</code>, <code>PrintWriter</code>, try-with-resources, encoding pitfalls.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Persistent To-Do List">P34</span><span class="pj" title="CSV &amp; JSON Parser">P35</span><span class="pj" title="Contact Manager (Persistent)">P36</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>NIO &amp; <code>java.nio.file</code></h4>
+          <p><code>Path</code>, <code>Files</code>, walking file trees, watching directories, channels vs streams.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CSV &amp; JSON Parser">P35</span><span class="pj" title="Log File Analyzer">P37</span><span class="pj" title="Folder Backup / Sync Tool">P38</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4><code>java.time</code></h4>
+          <p><code>LocalDate</code>, <code>LocalDateTime</code>, <code>ZonedDateTime</code>, <code>Period</code>/<code>Duration</code>, formatting and parsing, time-zone handling.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Student Management System">P15</span><span class="pj" title="Birthday &amp; Deadline Reminder">P39</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Regular expressions</h4>
+          <p><code>Pattern</code>, <code>Matcher</code>, groups, greedy vs lazy quantifiers, using regex for parsing and validation.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Word Frequency Counter">P26</span><span class="pj" title="Log File Analyzer">P37</span><span class="pj" title="Expression Evaluator">P43</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Reflection &amp; annotations</h4>
+          <p>Reading annotations at runtime, custom annotations, <code>Method.invoke</code>, why frameworks rely on it, and its costs.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Refactor with Hibernate (ORM)">P60</span><span class="pj" title="Cross-Cutting Concerns with AOP">P80</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>JVM internals</h4>
+          <p>Memory model, heap vs stack, garbage collectors (G1, ZGC), JIT compilation, class loading, JFR.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Performance &amp; Profiling">P115</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 02 OOP ============ -->
+  <section class="domain" id="d2">
+    <div class="domain-head">
+      <span class="domain-num">02</span>
+      <h2>OOP &amp; Design Fundamentals</h2>
+      <span class="domain-when">Tiers 2–3, revisited in architecture</span>
+    </div>
+    <p class="domain-desc">
+      Model the real world with classes, interfaces, and contracts. This is where Java
+      stops being a scripting language and starts being a design tool.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Classes, objects &amp; encapsulation</h4>
+          <p>Constructors, <code>this</code>, access modifiers, getters/setters, immutability, static vs instance members.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Rock, Paper, Scissors">P13</span><span class="pj" title="Banking System">P14</span><span class="pj" title="Library Management System">P16</span><span class="pj" title="Flashcard App (Console)">P18</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Inheritance, interfaces &amp; polymorphism</h4>
+          <p>Abstract classes, interfaces (with default/static methods), overriding vs overloading, the Liskov principle in practice.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Library Management System">P16</span><span class="pj" title="Shape Hierarchy">P19</span><span class="pj" title="Zoo / Animals">P20</span><span class="pj" title="Text RPG Battle">P25</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Enums</h4>
+          <p>Simple enums, enums with fields and methods, using them in <code>switch</code>, <code>EnumSet</code> / <code>EnumMap</code>.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Rock, Paper, Scissors">P13</span><span class="pj" title="Banking System">P14</span><span class="pj" title="Vending Machine">P21</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4><code>equals</code>, <code>hashCode</code> &amp; <code>toString</code></h4>
+          <p>The contracts, when to override, using them with collections, debugging with meaningful <code>toString</code>.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Student Management System">P15</span><span class="pj" title="Inventory System">P23</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4><code>Comparable</code> &amp; <code>Comparator</code></h4>
+          <p>Natural ordering vs custom ordering, comparator chaining, sorting collections of objects.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Inventory System">P23</span><span class="pj" title="Contact Book (TreeMap)">P27</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Composition over inheritance</h4>
+          <p>Favour has-a over is-a, delegation, avoiding deep hierarchies, flexible design.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Parking Lot Model">P24</span><span class="pj" title="Text RPG Battle">P25</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>SOLID principles</h4>
+          <p>Single responsibility, open/closed, Liskov, interface segregation, dependency inversion — in practice, not in theory.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Parking Lot Model">P24</span><span class="pj" title="Design Patterns in Practice">P95</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Domain modeling &amp; invariants</h4>
+          <p>Entities with identity, value objects, aggregates, enforcing business rules inside the model.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Student Management System">P15</span><span class="pj" title="Library Management System">P16</span><span class="pj" title="Parking Lot Model">P24</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 03 COLLECTIONS, STREAMS & MODERN JAVA ============ -->
+  <section class="domain" id="d3">
+    <div class="domain-head">
+      <span class="domain-num">03</span>
+      <h2>Collections, Streams &amp; Modern Java</h2>
+      <span class="domain-when">Tiers 2–4, used everywhere</span>
+    </div>
+    <p class="domain-desc">
+      The everyday toolbox of a working Java developer. Collections, streams, generics,
+      and the modern Java features that make code shorter and safer.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Collections framework</h4>
+          <p><code>List</code>, <code>Set</code>, <code>Map</code> and their common implementations. Ordering, equality contracts, iteration patterns.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="To-Do List (In-Memory)">P5</span><span class="pj" title="Banking System">P14</span><span class="pj" title="Student Management System">P15</span><span class="pj" title="Inventory System">P23</span><span class="pj" title="Word Frequency Counter">P26</span><span class="pj" title="Contact Book (TreeMap)">P27</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4><code>TreeMap</code> &amp; sorted collections</h4>
+          <p>Sorted maps and sets, comparator-driven ordering, navigable operations.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Contact Book (TreeMap)">P27</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Lambdas &amp; functional interfaces</h4>
+          <p><code>Function</code>, <code>Consumer</code>, <code>Supplier</code>, <code>Predicate</code>, <code>BiFunction</code>, method references, effectively-final captures.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Word Frequency Counter">P26</span><span class="pj" title="Employee Stream Playground">P28</span><span class="pj" title="Contact Manager (Persistent)">P36</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Streams API</h4>
+          <p><code>map</code>, <code>filter</code>, <code>reduce</code>, <code>collect</code>, <code>flatMap</code>, grouping, partitioning, parallel streams (and when not to use them).</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Word Frequency Counter">P26</span><span class="pj" title="Employee Stream Playground">P28</span><span class="pj" title="Contact Manager (Persistent)">P36</span><span class="pj" title="Log File Analyzer">P37</span><span class="pj" title="Batch Processing Job">P81</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Optional</h4>
+          <p>When it helps, when it hurts, <code>orElse</code> vs <code>orElseGet</code>, chaining with <code>map</code>/<code>flatMap</code>, and why it's not for fields.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Optional-Safe Lookup Service">P29</span><span class="pj" title="Spring Data JPA Refactor">P65</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Generics</h4>
+          <p>Generic classes, methods, bounded type parameters, wildcards (<code>? extends</code>, <code>? super</code>), type erasure and its consequences.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Generic Utility Library">P30</span><span class="pj" title="Implement a Stack and a Queue">P40</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Immutability &amp; value objects</h4>
+          <p>Final fields, defensive copies, <code>BigDecimal</code> pitfalls, building truly immutable types.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Immutable Money / Value Objects">P31</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Records &amp; sealed types</h4>
+          <p>Java 17+ records for concise data carriers, sealed interfaces for closed hierarchies, exhaustive switches.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Shapes with Records &amp; Sealed Types">P32</span><span class="pj" title="Hexagonal Architecture Rewrite">P96</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Pattern matching</h4>
+          <p><code>instanceof</code> patterns, switch patterns, record patterns, expression-oriented design.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Shapes with Records &amp; Sealed Types">P32</span><span class="pj" title="Pattern-Matching Rule Engine">P33</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Switch expressions</h4>
+          <p>Arrow syntax, <code>yield</code>, exhaustiveness, using switch as an expression rather than a statement.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Shapes with Records &amp; Sealed Types">P32</span><span class="pj" title="Pattern-Matching Rule Engine">P33</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 04 CONCURRENCY ============ -->
+  <section class="domain" id="d4">
+    <div class="domain-head">
+      <span class="domain-num">04</span>
+      <h2>Concurrency &amp; Multithreading</h2>
+      <span class="domain-when">Tier 5, deepened at 8 and 12</span>
+    </div>
+    <p class="domain-desc">
+      Programs that do more than one thing at a time. Learn the classic primitives first,
+      then the higher-level abstractions, then modern Java's answer to thread-per-request.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Threads &amp; <code>Runnable</code></h4>
+          <p>Creating threads, life cycle, <code>join</code>, daemon threads, why thread-per-task doesn't scale.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-threaded File Downloader">P44</span><span class="pj" title="Parallel Counter">P48</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>ExecutorService &amp; thread pools</h4>
+          <p><code>newFixedThreadPool</code>, <code>Callable</code>, <code>Future</code>, pool sizing, queue behaviour, graceful shutdown.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-threaded File Downloader">P44</span><span class="pj" title="Parallel Web Crawler">P50</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Thread safety primitives</h4>
+          <p><code>synchronized</code>, <code>volatile</code>, <code>wait</code>/<code>notifyAll</code>, the Java memory model in practice.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Producer–Consumer">P45</span><span class="pj" title="Parallel Counter">P48</span><span class="pj" title="Deadlock Lab">P49</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Concurrent collections</h4>
+          <p><code>ConcurrentHashMap</code>, <code>CopyOnWriteArrayList</code>, <code>BlockingQueue</code>, atomic classes.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Producer–Consumer">P45</span><span class="pj" title="Multi-client Chat">P46</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Atomic classes &amp; lock-free reasoning</h4>
+          <p><code>AtomicInteger</code>, <code>AtomicReference</code>, CAS, compare-and-swap, why lock-free isn't always faster.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Rate Limiter">P51</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Deadlocks &amp; lock ordering</h4>
+          <p>Reproducing deadlocks, lock ordering, <code>tryLock</code> with timeout, diagnosing with thread dumps.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Deadlock Lab">P49</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>CompletableFuture &amp; async composition</h4>
+          <p><code>thenApply</code>, <code>thenCompose</code>, <code>allOf</code>, exception handling, timeouts, orchestrating multiple async calls.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Parallel Web Crawler">P50</span><span class="pj" title="Async Orchestration">P82</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring <code>@Async</code></h4>
+          <p>Custom <code>ThreadPoolTaskExecutor</code>, returning <code>CompletableFuture</code>, propagation of security context, self-invocation traps.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Async Orchestration">P82</span><span class="pj" title="Email Notification Service">P76</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Rate limiting &amp; token buckets</h4>
+          <p>Token bucket, sliding window, <code>AtomicLong</code>, <code>ConcurrentHashMap</code>, per-key rate limits.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Rate Limiter">P51</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Virtual threads &amp; structured concurrency</h4>
+          <p>Java 21+ virtual threads, <code>StructuredTaskScope</code>, pinning, when they help and when they don't.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Virtual Threads &amp; Structured Concurrency">P118</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 05 NETWORKING ============ -->
+  <section class="domain" id="d5">
+    <div class="domain-head">
+      <span class="domain-num">05</span>
+      <h2>Networking &amp; HTTP Clients</h2>
+      <span class="domain-when">Tier 5, used in tiers 7–11</span>
+    </div>
+    <p class="domain-desc">
+      Programs that talk to other programs. Sockets for the fundamentals, <code>HttpClient</code>
+      for the day-to-day, and the patience to handle timeouts and errors properly.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>TCP sockets</h4>
+          <p><code>ServerSocket</code>, <code>Socket</code>, blocking I/O, one thread per client, simple protocol design.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-client Chat">P46</span><span class="pj" title="Web Server from Scratch">P47</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>HTTP fundamentals</h4>
+          <p>Requests, responses, methods, status codes, headers, MIME types, cookies, CORS.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Web Server from Scratch">P47</span><span class="pj" title="RESTful To-Do API">P63</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4><code>java.net.http.HttpClient</code></h4>
+          <p>Building requests, async vs sync, timeouts, retries, JSON parsing of responses.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-threaded File Downloader">P44</span><span class="pj" title="Parallel Web Crawler">P50</span><span class="pj" title="Weather CLI">P52</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>WebSockets &amp; Server-Sent Events</h4>
+          <p>Bidirectional vs server-push, connection lifecycle, scaling stateful connections.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="WebSocket Live Notifications">P108</span><span class="pj" title="Reactive Service">P117</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Reverse proxy &amp; TLS</h4>
+          <p>Nginx as a reverse proxy, TLS termination, headers, gzip, caching, hardening.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Nginx Reverse Proxy + HTTPS">P116</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 06 DATA & DB ============ -->
+  <section class="domain" id="d6">
+    <div class="domain-head">
+      <span class="domain-num">06</span>
+      <h2>Databases &amp; Persistence</h2>
+      <span class="domain-when">Tier 6, deepened at 7–10</span>
+    </div>
+    <p class="domain-desc">
+      From raw SQL to ORMs to migrations. You'll use Postgres for most projects, Redis
+      for caching, Elasticsearch for search, and know when each is the wrong tool.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Relational modelling &amp; SQL</h4>
+          <p>Tables, keys, constraints, <code>SELECT</code>/<code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code>, joins, indexes, transactions, normalisation.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="To-Do List with JDBC">P53</span><span class="pj" title="SQL Playground in Docker">P54</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>JDBC</h4>
+          <p><code>Connection</code>, <code>Statement</code>, <code>PreparedStatement</code>, <code>ResultSet</code>, SQL injection and how prepared statements prevent it.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="To-Do List with JDBC">P53</span><span class="pj" title="JDBC Contact Book">P55</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>DAO / repository layer</h4>
+          <p>Separating persistence from business logic, interfaces, row mappers, testability.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="DAO / Repository Layer">P56</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Transactions &amp; ACID</h4>
+          <p>Commit/rollback, isolation levels, deadlocks at the DB layer, correctness over speed.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Transactional Money Transfer">P57</span><span class="pj" title="Capacity-Safe Booking">P106</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Connection pooling</h4>
+          <p>HikariCP, pool sizing, connection leaks, why pool exhaustion is a classic production incident.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="HikariCP Pool Experiment">P58</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Schema migrations</h4>
+          <p>Flyway or Liquibase, versioned migration scripts, rollback thinking, keeping prod in sync with code.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Flyway Migrations Project">P59</span><span class="pj" title="Integration Tests with Testcontainers">P86</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>JPA &amp; Hibernate</h4>
+          <p>Entities, <code>@Id</code>, <code>@Column</code>, <code>EntityManager</code>, the impedance mismatch, when to drop to native SQL.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Refactor with Hibernate (ORM)">P60</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Entity relationships &amp; loading</h4>
+          <p><code>@OneToMany</code>, <code>@ManyToOne</code>, <code>@ManyToMany</code>, lazy vs eager, the N+1 problem and how to detect it.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="JPA Library Model">P61</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Query languages &amp; specifications</h4>
+          <p>JPQL, Criteria API, projections, Specifications, fetch joins, performance implications.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Query Lab">P62</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring Data JPA</h4>
+          <p><code>JpaRepository</code>, derived queries, <code>@Query</code>, projections, specifications, pagination &amp; sorting.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Spring Data JPA Refactor">P65</span><span class="pj" title="Catalog with Paging &amp; Filtering">P68</span><span class="pj" title="URL Shortener">P69</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4><code>@Transactional</code> &amp; propagation</h4>
+          <p>Transaction boundaries, propagation modes, read-only, rollback rules, the self-invocation trap.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Spring Data JPA Refactor">P65</span><span class="pj" title="Transactional Outbox Pattern">P101</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 07 WEB & APIS ============ -->
+  <section class="domain" id="d7">
+    <div class="domain-head">
+      <span class="domain-num">07</span>
+      <h2>Web, HTTP &amp; API Styles</h2>
+      <span class="domain-when">Tiers 5, 7–8, 12</span>
+    </div>
+    <p class="domain-desc">
+      HTTP first, then the four major API styles you'll meet in Java backends:
+      REST, GraphQL, gRPC, and reactive streams. Each has a sweet spot.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>REST design</h4>
+          <p>Resources, verbs, idempotency, correct status codes, error response shapes, versioning.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Blog Engine API">P67</span><span class="pj" title="URL Shortener">P69</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>JSON &amp; Jackson</h4>
+          <p>Serialization, DTOs, <code>@JsonProperty</code>, custom serializers, dates and time zones.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CSV &amp; JSON Parser">P35</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Validation &amp; error handling</h4>
+          <p>Bean Validation, <code>@ControllerAdvice</code>, <code>ProblemDetail</code> (RFC 7807), consistent error contracts.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Validation &amp; Global Error Handling">P66</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Server-side MVC &amp; templating</h4>
+          <p>Thymeleaf, form binding, flash messages, server-rendered pages, when to go SPA vs server-side.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Bookstore with Thymeleaf">P70</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>File upload &amp; download</h4>
+          <p>Multipart requests, streaming large files, storage abstraction (local/S3), limits, content types.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="File Upload / Download Service">P72</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>OpenAPI / Swagger</h4>
+          <p>Documenting APIs, generating clients, contract-first vs code-first, keeping docs honest.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Swagger / OpenAPI Docs">P73</span><span class="pj" title="First Portfolio Project">P77</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>GraphQL</h4>
+          <p>Schema, resolvers, queries/mutations, DataLoader batching for N+1, when not to use it.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="GraphQL API">P83</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>gRPC &amp; Protocol Buffers</h4>
+          <p>Contract-first service definitions, HTTP/2, streaming RPCs, schema evolution.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="gRPC Service">P84</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Reactive APIs — WebFlux &amp; Reactor</h4>
+          <p><code>Mono</code>/<code>Flux</code>, operators, backpressure, R2DBC, SSE and WebSocket.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Reactive Service">P117</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 08 SPRING ============ -->
+  <section class="domain" id="d8">
+    <div class="domain-head">
+      <span class="domain-num">08</span>
+      <h2>Spring Ecosystem</h2>
+      <span class="domain-when">Tiers 7–8</span>
+    </div>
+    <p class="domain-desc">
+      The de facto Java backend framework. Learn core DI and Boot first, then Security,
+      Data, AOP, Batch, and Cloud. Each sub-project solves a specific problem.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Spring Core &amp; dependency injection</h4>
+          <p>IoC container, beans, scopes, constructor injection, <code>@Component</code>, <code>@Configuration</code>, <code>@Bean</code>.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Spring Data JPA Refactor">P65</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Spring Boot</h4>
+          <p>Auto-configuration, starters, <code>application.yml</code>, profiles, Actuator, embedded server.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Full-Stack To-Do (API + Frontend)">P64</span><span class="pj" title="Profiles, Config &amp; Actuator">P74</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Spring MVC</h4>
+          <p><code>@RestController</code>, <code>@RequestMapping</code> family, <code>@RequestBody</code>, <code>@PathVariable</code>, <code>@ExceptionHandler</code>, validation with <code>@Valid</code>.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Validation &amp; Global Error Handling">P66</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Scheduling &amp; domain events</h4>
+          <p><code>@Scheduled</code>, cron expressions, <code>ApplicationEvent</code>, transactional events, decoupled reactions.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Scheduler &amp; Domain Events">P75</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Email &amp; notifications</h4>
+          <p>Template-driven emails, async sending, retries, failure queues.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Email Notification Service">P76</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring Security</h4>
+          <p>Filter chain, authentication vs authorisation, BCrypt, JWT access/refresh, method-level <code>@PreAuthorize</code>.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Session Login &amp; Roles">P71</span><span class="pj" title="Full Auth System">P78</span><span class="pj" title="First Portfolio Project">P77</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>OAuth2 &amp; OIDC</h4>
+          <p>Authorization code flow, scopes, identity providers, account linking to local users.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="OAuth2 / Social Login">P79</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring AOP</h4>
+          <p>Aspects, pointcuts, advice, <code>@Around</code>, proxies, self-invocation trap, custom annotations.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Cross-Cutting Concerns with AOP">P80</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring Batch</h4>
+          <p>Jobs, steps, chunk-oriented processing, readers/processors/writers, restart &amp; skip logic.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Batch Processing Job">P81</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring Cloud</h4>
+          <p>Eureka service discovery, Gateway, Config Server, OpenFeign, the real cost of microservices.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Microservices Split">P111</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Spring Kafka &amp; Spring AMQP</h4>
+          <p>Message-driven POJOs, listener containers, offset management, retries, DLQs.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Event-Driven Order Pipeline">P99</span><span class="pj" title="Work Queue with Retries and DLQ">P100</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 09 MESSAGING ============ -->
+  <section class="domain" id="d9">
+    <div class="domain-head">
+      <span class="domain-num">09</span>
+      <h2>Messaging &amp; Distributed Systems</h2>
+      <span class="domain-when">Tier 10</span>
+    </div>
+    <p class="domain-desc">
+      Where single-process thinking breaks down. Events, queues, distributed transactions,
+      and the patterns that make multi-service systems reliable.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Apache Kafka</h4>
+          <p>Topics, partitions, consumer groups, offsets, at-least-once delivery, replaying events, retention.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Event-Driven Order Pipeline">P99</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>RabbitMQ &amp; AMQP</h4>
+          <p>Exchanges, queues, routing keys, acknowledgements, prefetch, dead-lettering.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Work Queue with Retries and DLQ">P100</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Schema evolution &amp; event contracts</h4>
+          <p>Avro, JSON Schema, compatibility rules, versioning producers and consumers independently.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Event-Driven Order Pipeline">P99</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Transactional Outbox</h4>
+          <p>Dual-write problem, outbox table, polling publisher vs CDC (Debezium), eventual consistency.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Transactional Outbox Pattern">P101</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Idempotency &amp; exactly-once</h4>
+          <p>Idempotency keys, deduplication windows, at-least-once vs effectively-once, designing for retries.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Idempotency &amp; Exactly-Once Semantics">P102</span><span class="pj" title="Capacity-Safe Booking">P106</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Saga pattern</h4>
+          <p>Choreography vs orchestration, compensating actions, failure state machines, distributed transaction impossibility.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Saga Pattern">P103</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>CQRS &amp; Event Sourcing</h4>
+          <p>Separating reads from writes, event stores, projections, replay, when this is overkill.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 10 RESILIENCE ============ -->
+  <section class="domain" id="d10">
+    <div class="domain-head">
+      <span class="domain-num">10</span>
+      <h2>Resilience &amp; Reliability</h2>
+      <span class="domain-when">Tier 10</span>
+    </div>
+    <p class="domain-desc">
+      What happens when dependencies fail — because they will. Circuit breakers, retries,
+      bulkheads, and fallbacks that keep your service alive when something else is on fire.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Resilience4j</h4>
+          <p>Circuit breaker, retry, bulkhead, rate limiter, time limiter, fallbacks — the full toolkit in one library.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Resilience Toolkit">P104</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Cascading failure &amp; fail-fast</h4>
+          <p>Why one slow dependency can take down a whole system, and how to design against it.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Resilience Toolkit">P104</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Timeouts, retries &amp; backoff</h4>
+          <p>Exponential backoff with jitter, timeout budgets, retry storms, idempotency as a prerequisite.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Resilience Toolkit">P104</span><span class="pj" title="Work Queue with Retries and DLQ">P100</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Concurrency-safe capacity</h4>
+          <p>Optimistic vs pessimistic locking, unique constraints, retry loops, overbooking prevention.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Capacity-Safe Booking">P106</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Chaos engineering</h4>
+          <p>Deliberately breaking your own service — kill the DB, fill the disk, add latency — and writing a post-mortem.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Resilience Toolkit">P104</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 11 CACHING & SEARCH ============ -->
+  <section class="domain" id="d11">
+    <div class="domain-head">
+      <span class="domain-num">11</span>
+      <h2>Caching &amp; Search</h2>
+      <span class="domain-when">Tiers 7, 10, 12</span>
+    </div>
+    <p class="domain-desc">
+      Two ways to make things fast: don't recompute, and don't scan. Caching keeps hot data
+      in memory; search engines keep documents findable.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Caching patterns</h4>
+          <p>Cache-aside, write-through, write-behind, TTL, eviction, invalidation, stampede prevention.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Distributed Caching &amp; Locking">P105</span><span class="pj" title="URL Shortener">P69</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Redis &amp; Spring Data Redis</h4>
+          <p>Strings, hashes, lists, sets, sorted sets, pub/sub, expiring keys, using it as a distributed cache.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Distributed Caching &amp; Locking">P105</span><span class="pj" title="URL Shortener">P69</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Local caching with Caffeine</h4>
+          <p>In-process cache, size-based eviction, refresh-after-write, combined local + distributed tiers.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Distributed Caching &amp; Locking">P105</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Distributed locking</h4>
+          <p>Redis locks, Redisson, lock leases, fencing tokens, why naive <code>SETNX</code> isn't enough.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Distributed Caching &amp; Locking">P105</span><span class="pj" title="Capacity-Safe Booking">P106</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Elasticsearch / OpenSearch</h4>
+          <p>Index mappings, analyzers, inverted indexes, fuzzy search, facets, relevance scoring.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full-Text Search Service">P119</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Keeping the search index in sync</h4>
+          <p>Dual writes vs event-driven indexing, reindexing, staleness windows, query consistency.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full-Text Search Service">P119</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 12 TESTING ============ -->
+  <section class="domain" id="d12">
+    <div class="domain-head">
+      <span class="domain-num">12</span>
+      <h2>Testing &amp; Code Quality</h2>
+      <span class="domain-when">Tier 9, woven through 5–12</span>
+    </div>
+    <p class="domain-desc">
+      The single biggest signal of professional work. Tests shape design, catch regressions,
+      and prove your code does what the ticket said. Learn it early — don't bolt it on later.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>JUnit 5</h4>
+          <p><code>@Test</code>, assertions, <code>@BeforeEach</code>, parameterised tests, nested tests, tagging.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full Test Suite for the To-Do API">P85</span><span class="pj" title="Tested String &amp; Math Utils">P87</span><span class="pj" title="TDD Kata">P90</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>AssertJ &amp; fluent assertions</h4>
+          <p>Readable assertions, collections matchers, exception assertions, soft assertions.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full Test Suite for the To-Do API">P85</span><span class="pj" title="Tested String &amp; Math Utils">P87</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Mockito</h4>
+          <p>Mocks, stubs, spies, argument matchers, <code>verify</code>, when to mock vs when to use the real thing.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full Test Suite for the To-Do API">P85</span><span class="pj" title="Mockito Warm-up: Notifier">P88</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Spring Boot Test slices</h4>
+          <p><code>@WebMvcTest</code>, <code>@DataJpaTest</code>, <code>@SpringBootTest</code>, <code>MockMvc</code>, test configuration.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Full Test Suite for the To-Do API">P85</span><span class="pj" title="Integration Tests with Testcontainers">P86</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Testcontainers</h4>
+          <p>Real Postgres, Kafka, Redis in disposable Docker containers during tests. No more H2 lies.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Integration Tests with Testcontainers">P86</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>WireMock</h4>
+          <p>Fake HTTP servers in tests, simulating failures and timeouts, contract testing mindset.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="WireMock Integration Tests">P89</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>TDD (red-green-refactor)</h4>
+          <p>The loop, small steps, driving design through tests, when TDD pays off and when it doesn't.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="TDD Kata">P90</span><span class="pj" title="Tested String &amp; Math Utils">P87</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Characterization tests &amp; refactoring</h4>
+          <p>Safe refactoring of legacy code, tests as a safety net, working with ugly codebases.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Legacy Code Refactoring Kata">P91</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>ArchUnit</h4>
+          <p>Enforce architecture rules as tests — no domain class may import Spring, no controller may call a repository directly.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Hexagonal Architecture Rewrite">P96</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Static analysis</h4>
+          <p>Checkstyle, SpotBugs, PMD — wired into the build and failing on violations.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Code Quality Gate">P93</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Coverage &amp; SonarQube</h4>
+          <p>JaCoCo reports, SonarQube (in Docker), coverage thresholds, treating metrics as signals not goals.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Code Quality Gate">P93</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Load &amp; performance testing</h4>
+          <p>k6 or Gatling scenarios, ramp-up, throughput vs latency, percentile thinking.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Performance &amp; Profiling">P115</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 13 BUILD TOOLS ============ -->
+  <section class="domain" id="d13">
+    <div class="domain-head">
+      <span class="domain-num">13</span>
+      <h2>Build Tools &amp; Project Structure</h2>
+      <span class="domain-when">Tiers 4, 9</span>
+    </div>
+    <p class="domain-desc">
+      How Java projects are actually assembled. Maven is the default; Gradle is the modern
+      alternative. Multi-module layouts prepare you for real codebases.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>Maven essentials</h4>
+          <p><code>pom.xml</code>, coordinates, dependencies, scopes, plugin configuration, standard directory layout.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CSV &amp; JSON Parser">P35</span><span class="pj" title="RESTful To-Do API">P63</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Multi-module builds</h4>
+          <p>Parent POM, modules, BOM imports, dependency management, module boundaries as architecture.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-Module Build">P92</span><span class="pj" title="Hexagonal Architecture Rewrite">P96</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Build profiles &amp; environments</h4>
+          <p>Different config for dev/test/prod, resource filtering, property overrides.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-Module Build">P92</span><span class="pj" title="CI/CD Pipeline">P94</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>CLI tools &amp; packaging</h4>
+          <p>picocli for subcommands and options, runnable fat jars, packaging, user-facing UX.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CLI Tool with picocli">P97</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 14 OBSERVABILITY ============ -->
+  <section class="domain" id="d14">
+    <div class="domain-head">
+      <span class="domain-num">14</span>
+      <h2>Observability &amp; Performance</h2>
+      <span class="domain-when">Tier 11</span>
+    </div>
+    <p class="domain-desc">
+      You can't fix what you can't see. Metrics, logs, and traces — plus the profiling
+      tools that tell you why the JVM is slow or eating memory.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>SLF4J &amp; Logback</h4>
+          <p>Log levels that mean something, parameterised messages, appenders, MDC for context.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Structured Logging &amp; Aggregation">P113</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Structured logging</h4>
+          <p>JSON logs, correlation IDs, trace-context propagation, PII in logs, log aggregation with Loki/ELK.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Structured Logging &amp; Aggregation">P113</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Micrometer &amp; Prometheus</h4>
+          <p>Counters, gauges, timers, histograms, custom metrics, PromQL basics, RED/USE methods.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Observability Stack">P112</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Grafana dashboards</h4>
+          <p>Panels, alerts, SLO/error-budget thinking, making metrics actually useful.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Observability Stack">P112</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>OpenTelemetry &amp; distributed tracing</h4>
+          <p>Spans, context propagation across services, Jaeger/Tempo, finding the slow hop.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Observability Stack">P112</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>JFR, async-profiler &amp; VisualVM</h4>
+          <p>Flame graphs, allocation profiling, CPU hotspots, GC logs, memory leak detection.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Performance &amp; Profiling">P115</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Load testing &amp; capacity planning</h4>
+          <p>k6 / Gatling, ramp-up curves, throughput vs latency, p95/p99, measuring before optimizing.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Performance &amp; Profiling">P115</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 15 CONTAINERS & CLOUD ============ -->
+  <section class="domain" id="d15">
+    <div class="domain-head">
+      <span class="domain-num">15</span>
+      <h2>Containers &amp; Cloud</h2>
+      <span class="domain-when">Tier 11</span>
+    </div>
+    <p class="domain-desc">
+      Running software is a different skill from writing it. Package it, orchestrate it,
+      deploy it to a cloud, and understand what you're actually paying for.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Docker</h4>
+          <p>Images, containers, layers, multi-stage builds, non-root users, health checks, layer caching.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Containerize the Whole Stack">P109</span><span class="pj" title="SQL Playground in Docker">P54</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>docker-compose</h4>
+          <p>Composing app + Postgres + Redis + Kafka locally, networks, volumes, env config.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Containerize the Whole Stack">P109</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Kubernetes</h4>
+          <p>Pods, Deployments, Services, Ingress, ConfigMap, Secret, HPA, liveness/readiness probes, resource limits, rolling updates.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Kubernetes Deployment">P110</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>AWS (or GCP / Azure)</h4>
+          <p>Managed DB (RDS), object storage (S3), compute (ECS Fargate / Lambda), IAM least privilege, Secrets Manager, CloudWatch.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Cloud Deployment">P114</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Infrastructure as code</h4>
+          <p>Terraform or AWS CDK, state files, plan/apply, reviewing infra changes like code.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Cloud Deployment">P114</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Microservices split &amp; service discovery</h4>
+          <p>Spring Cloud, Eureka, Gateway, Config Server, OpenFeign, the real cost of microservices.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Microservices Split">P111</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 16 CI/CD ============ -->
+  <section class="domain" id="d16">
+    <div class="domain-head">
+      <span class="domain-num">16</span>
+      <h2>CI/CD &amp; Automation</h2>
+      <span class="domain-when">Tier 9</span>
+    </div>
+    <p class="domain-desc">
+      Every push should build, test, and ship the same way. Pipelines are how you get
+      from "works on my machine" to "works in prod".
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>GitHub Actions (or GitLab CI)</h4>
+          <p>Workflows, jobs, steps, matrix builds, caching, secrets, environments, PR checks.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CI/CD Pipeline">P94</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Build → test → package → deploy</h4>
+          <p>Pipeline stages, artifact publishing, Docker image push, staging deploy, rollback thinking.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="CI/CD Pipeline">P94</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Deployment strategies</h4>
+          <p>Blue/green, canary, rolling, feature flags, zero-downtime thinking.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Kubernetes Deployment">P110</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 17 ARCHITECTURE ============ -->
+  <section class="domain" id="d17">
+    <div class="domain-head">
+      <span class="domain-num">17</span>
+      <h2>Architecture &amp; Design</h2>
+      <span class="domain-when">Tiers 9, 10, 12 — deepened throughout</span>
+    </div>
+    <p class="domain-desc">
+      The difference between "writes code" and "designs systems". Patterns are vocabulary;
+      architecture is knowing when to use them and when to leave them alone.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Design patterns (GoF)</h4>
+          <p>Strategy, Factory, Builder, Decorator, Observer, Template Method, Chain of Responsibility — as trade-off vocabulary.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Design Patterns in Practice">P95</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Layered architecture</h4>
+          <p>Controllers → services → repositories, and the leaks that appear at each boundary.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Hexagonal / clean architecture</h4>
+          <p>Ports &amp; adapters, pure domain, dependency inversion at the edges, testing the domain without Spring.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Hexagonal Architecture Rewrite">P96</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Monolith vs microservices</h4>
+          <p>Modular monoliths, service boundaries, distributed transactions, why microservices are a cost not a goal.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-Module Build">P92</span><span class="pj" title="Microservices Split">P111</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Multi-tenancy &amp; RBAC</h4>
+          <p>Tenant isolation, roles/permissions model, audit logs, data-leakage risks, defence in depth.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Multi-Tenant RBAC App">P107</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Domain-Driven Design (tactical)</h4>
+          <p>Entities, value objects, aggregates, domain events, invariants, ubiquitous language.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Domain-Driven Design (strategic)</h4>
+          <p>Bounded contexts, context mapping, anti-corruption layers, drawing boundaries before writing code.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Architecture Decision Records (ADRs)</h4>
+          <p>Context, options, decision, consequences. The artefact senior interviews probe.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>System design trade-offs</h4>
+          <p>CAP, consistency vs availability, latency vs throughput, coupling vs autonomy — practising out loud.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span><span class="pj" title="URL Shortener">P69</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- ============ 18 TOOLS & PRACTICE ============ -->
+  <section class="domain" id="d18">
+    <div class="domain-head">
+      <span class="domain-num">18</span>
+      <h2>Tools, Practices &amp; Soft Skills</h2>
+      <span class="domain-when">All tiers — daily habits</span>
+    </div>
+    <p class="domain-desc">
+      The tools you'll open every day, and the non-code skills that decide whether
+      you're trusted with a production service.
+    </p>
+
+    <div class="concepts">
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>Git &amp; GitHub</h4>
+          <p>Commits, branches, merge vs rebase, pull requests, code review, resolving conflicts, commit hygiene.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Git Workflow Sandbox">P98</span><span class="pj" title="All projects">All</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="foundation">
+        <div class="c-level"><span>Foundation</span></div>
+        <div class="c-body">
+          <h4>IntelliJ IDEA</h4>
+          <p>Debugger, refactoring, inspections, run configurations, HTTP client, database tool window.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="All projects">All</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>curl &amp; Postman</h4>
+          <p>Testing APIs by hand, environment variables, chained requests, saving collections.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="RESTful To-Do API">P63</span><span class="pj" title="Blog Engine API">P67</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="core">
+        <div class="c-level"><span>Core</span></div>
+        <div class="c-body">
+          <h4>CLI tooling</h4>
+          <p><code>jq</code>, <code>docker</code>, <code>kubectl</code>, <code>psql</code>, <code>redis-cli</code>, <code>kafka-topics</code> — the tools you reach for when the UI won't tell you what's wrong.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Containerize the Whole Stack">P109</span><span class="pj" title="Kubernetes Deployment">P110</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Writing READMEs &amp; docs</h4>
+          <p>What the project does, how to run it, architecture diagram, decisions, how to contribute. Recruiters and reviewers read these first.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="First Portfolio Project">P77</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Code review</h4>
+          <p>Reviewing others' code constructively, receiving feedback without ego, asking clarifying questions on PRs.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Open source & team work">Ongoing</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="advanced">
+        <div class="c-level"><span>Advanced</span></div>
+        <div class="c-body">
+          <h4>Estimation &amp; ticket breakdown</h4>
+          <p>Breaking ambiguous work into deliverable slices, estimating with ranges, communicating slippage early.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Team-scale work">Ongoing</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>Production incident response</h4>
+          <p>Reading dashboards under pressure, forming hypotheses, mitigating first then diagnosing, writing blameless post-mortems.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Observability Stack">P112</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+      <article class="concept" data-level="expert">
+        <div class="c-level"><span>Expert</span></div>
+        <div class="c-body">
+          <h4>System design communication</h4>
+          <p>Drawing architecture on a whiteboard, defending trade-offs out loud, thinking about scale, failure, and cost.</p>
+          <div class="c-projects"><span class="lbl">Projects</span><span class="pj" title="Architecture Capstone">P120</span></div>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <strong>No concepts match your search.</strong>
+    Try a different keyword, or clear the search box.
+  </div>
+
+</main>
+
+<footer>
+  <p>Projects are numbered 1–120 and match the companion checklist. Progress there, concepts here.</p>
+</footer>
+
+<button class="totop" id="toTop" title="Back to top" aria-label="Back to top">↑</button>
+
+<script>
+(function () {
+  'use strict';
+
+  var THEME_KEY = 'java-learning-path-theme-v3';
+
+  /* ---------- DOM refs ---------- */
+  var searchInput        = document.getElementById('searchInput');
+  var domains            = [].slice.call(document.querySelectorAll('.domain'));
+  var emptyState         = document.getElementById('emptyState');
+  var domainGrid         = document.getElementById('domainGrid');
+  var domainFilterStatus = document.getElementById('domainFilterStatus');
+
+  /* ---------- State ---------- */
+  var activeDomainIndex = null; // null = show all, otherwise index into `domains`
+
+  /* ---------- Build domain cards from existing DOM ---------- */
+  function buildDomainCards() {
+    domains.forEach(function (dom, idx) {
+      var numEl  = dom.querySelector('.domain-num');
+      var h2El   = dom.querySelector('.domain-head h2');
+      var descEl = dom.querySelector('.domain-desc');
+      var concepts = dom.querySelectorAll('.concept');
+
+      // Detect which levels are present
+      var levels = { foundation: false, core: false, advanced: false, expert: false };
+      concepts.forEach(function (c) {
+        if (c.dataset.level && levels.hasOwnProperty(c.dataset.level)) {
+          levels[c.dataset.level] = true;
+        }
+      });
+
+      var levelsHtml = '';
+      if (levels.foundation) levelsHtml += '<span class="dc-lvl foundation">Foundation</span>';
+      if (levels.core)       levelsHtml += '<span class="dc-lvl core">Core</span>';
+      if (levels.advanced)   levelsHtml += '<span class="dc-lvl advanced">Advanced</span>';
+      if (levels.expert)     levelsHtml += '<span class="dc-lvl expert">Expert</span>';
+
+      var numText  = numEl ? numEl.textContent.trim() : String(idx + 1).padStart(2, '0');
+      var nameText = h2El  ? h2El.textContent.trim() : 'Domain ' + (idx + 1);
+      var descText = descEl ? descEl.textContent.trim() : '';
+
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'domain-card';
+      card.dataset.domainIndex = idx;
+      card.dataset.domainColor = String((idx % 18) + 1);
+
+      card.innerHTML =
+        '<div class="dc-num">Domain ' + numText + ' · ' + concepts.length + ' concepts</div>' +
+        '<h3>' + nameText + '</h3>' +
+        '<p>' + descText + '</p>' +
+        '<div class="dc-levels">' + levelsHtml + '</div>';
+
+      card.addEventListener('click', function () {
+        if (activeDomainIndex === idx) {
+          activeDomainIndex = null;
+          card.classList.remove('selected');
+        } else {
+          activeDomainIndex = idx;
+          [].forEach.call(domainGrid.children, function (c) { c.classList.remove('selected'); });
+          card.classList.add('selected');
+
+          // Scroll into view
+          var target = domains[idx];
+          if (target) {
+            setTimeout(function () {
+              target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 40);
+          }
+        }
+        applyFilters(searchInput.value);
+        updateDomainFilterStatus();
+      });
+
+      domainGrid.appendChild(card);
+    });
+  }
+
+  /* ---------- Update status line ---------- */
+  function updateDomainFilterStatus() {
+    if (activeDomainIndex === null) {
+      domainFilterStatus.innerHTML = '';
+      domainFilterStatus.classList.remove('has-filters');
+      return;
+    }
+    var card = domainGrid.children[activeDomainIndex];
+    var name = card ? card.querySelector('h3').textContent : '';
+    domainFilterStatus.innerHTML =
+      'Showing only <strong>' + name + '</strong>' +
+      '<button type="button" class="dfs-clear" id="clearDomainFilter">↺ Show all domains</button>';
+    domainFilterStatus.classList.add('has-filters');
+
+    var clearBtn = document.getElementById('clearDomainFilter');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        activeDomainIndex = null;
+        [].forEach.call(domainGrid.children, function (c) { c.classList.remove('selected'); });
+        applyFilters(searchInput.value);
+        updateDomainFilterStatus();
+      });
+    }
+  }
+
+  /* ---------- Combined filter: search + active domain ---------- */
+  function applyFilters(query) {
+    var q = (query || '').trim().toLowerCase();
+    var visible = 0;
+
+    domains.forEach(function (domain, idx) {
+      // Domain card filter: hide everything but the selected domain
+      if (activeDomainIndex !== null && idx !== activeDomainIndex) {
+        domain.classList.add('hidden');
+        return;
+      }
+
+      var any = false;
+      var concepts = domain.querySelectorAll('.concept');
+      concepts.forEach(function (c) {
+        var match = !q || c.textContent.toLowerCase().indexOf(q) !== -1;
+        c.classList.toggle('hidden', !match);
+        if (match) any = true;
+      });
+
+      domain.classList.toggle('hidden', !any);
+      if (any) visible++;
+    });
+
+    emptyState.hidden = visible > 0;
+  }
+
+  /* ---------- Search ---------- */
+  searchInput.addEventListener('input', function () {
+    applyFilters(searchInput.value);
+  });
+
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      applyFilters('');
+      searchInput.blur();
+    }
+  });
+
+  // "/" shortcut to focus search
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== searchInput &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+
+  /* ---------- Section nav highlighting ---------- */
+  var navLinks = [].slice.call(document.querySelectorAll('.secnav a'));
+  var navTargets = navLinks.map(function (a) {
+    var id = a.getAttribute('href').slice(1);
+    return document.getElementById(id);
+  });
+
+  function updateNav() {
+    var scrollY = window.scrollY + 180;
+    var current = null;
+    navTargets.forEach(function (el, i) {
+      if (el && el.offsetTop <= scrollY) current = i;
+    });
+    navLinks.forEach(function (a, i) {
+      a.classList.toggle('active', i === current);
+    });
+  }
+  window.addEventListener('scroll', updateNav, { passive: true });
+
+  /* ---------- Back to top ---------- */
+  var toTop = document.getElementById('toTop');
+  function updateToTop() {
+    toTop.classList.toggle('show', window.scrollY > 500);
+  }
+  window.addEventListener('scroll', updateToTop, { passive: true });
+  toTop.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  /* ---------- Theme ---------- */
+  var themeBtn = document.getElementById('themeBtn');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+  var saved;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+  if (!saved) {
+    saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark' : 'light';
+  }
+  setTheme(saved);
+
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- Print ---------- */
+  document.getElementById('printBtn').addEventListener('click', function () {
+    window.print();
+  });
+
+  /* ---------- Init ---------- */
+  buildDomainCards();
+  updateNav();
+  updateToTop();
+})();
+</script>
+</body>
+</html>

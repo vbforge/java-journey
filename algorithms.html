@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Algorithms Interview Checklist</title>
+<style>
+  :root{
+    --bg:#f6f7f9; --surface:#ffffff; --surface-2:#fbfbfc;
+    --text:#16181d; --muted:#697386; --border:#e4e7ec;
+    --accent:#f89820; --accent-2:#5382a1; --done:#15a34a;
+    --diff-E:#15a34a; --diff-M:#d97706; --diff-H:#dc2626;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 6px 20px -12px rgba(16,24,40,.25);
+    --radius:14px;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --topbar-h:auto;
+  }
+  [data-theme="dark"]{
+    --bg:#0e1014; --surface:#161a21; --surface-2:#1b2029;
+    --text:#e9ecf1; --muted:#98a2b3; --border:#262c37;
+    --accent:#f89820; --accent-2:#7fb2e0; --done:#4ade80;
+    --diff-E:#4ade80; --diff-M:#fbbf24; --diff-H:#f87171;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 24px -14px rgba(0,0,0,.8);
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:16px; line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+
+  /* ---------- Sticky header ---------- */
+  .topbar{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--surface) 92%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:1000px; margin:0 auto; padding:12px 20px 10px;
+    display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  }
+  .brand{
+    font-weight:700; font-size:15px; letter-spacing:-.01em;
+    display:flex; align-items:center; gap:9px; margin-right:auto;
+  }
+  .brand .dot{
+    width:11px; height:11px; border-radius:50%;
+    background:linear-gradient(135deg,var(--accent),var(--accent-2));
+  }
+  .brand small{color:var(--muted); font-weight:500; display:block; font-size:12px; line-height:1.2}
+
+  .bar-wrap{display:flex; align-items:center; gap:10px; min-width:200px; flex:1 1 200px; max-width:340px}
+  .bar{flex:1; height:8px; background:var(--border); border-radius:99px; overflow:hidden;}
+  .bar > i{
+    display:block; height:100%; width:0%;
+    background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    border-radius:99px; transition:width .3s ease;
+  }
+  .bar-label{
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+    white-space:nowrap; font-variant-numeric:tabular-nums;
+  }
+
+  .btn{
+    appearance:none; border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:13px; font-weight:600;
+    padding:7px 13px; border-radius:9px; cursor:pointer;
+    transition:background .15s, border-color .15s, transform .08s;
+  }
+  .btn:hover{background:var(--surface-2); border-color:var(--accent-2)}
+  .btn:active{transform:translateY(1px)}
+  .btn.ghost{background:transparent}
+
+  /* ---------- Home link ---------- */
+  .home-link{
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    color:var(--text);
+    transition:color .15s, background .15s, border-color .15s, transform .08s;
+  }
+  .home-link:hover{
+    color:var(--text);
+    background:var(--surface-2);
+    border-color:var(--accent-2);
+  }
+  .home-link:active{transform:translateY(1px)}
+  @media print{.home-link{display:none !important}}
+
+  /* ---------- Filter bar ---------- */
+  .filters{
+    max-width:1000px; margin:0 auto; padding:0 20px 14px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border);
+  }
+  .filter-group{display:flex; align-items:center; gap:6px; flex-wrap:wrap}
+  .filter-label{
+    font-size:11px; font-weight:700; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--muted); margin-right:2px;
+  }
+  .chip{
+    appearance:none; font:inherit; font-size:12.5px; font-weight:600;
+    padding:5px 11px; border-radius:99px; cursor:pointer;
+    border:1px solid var(--border); background:var(--surface); color:var(--text);
+    transition:background .15s, border-color .15s, color .15s, opacity .15s;
+  }
+  .chip:hover{border-color:var(--accent-2)}
+  .chip.active{
+    background:var(--accent-2); color:#fff; border-color:var(--accent-2);
+  }
+  [data-theme="dark"] .chip.active{color:#0e1014}
+  .chip.reset{
+    background:transparent; border-style:dashed; color:var(--muted);
+    padding:4px 10px; font-size:11px;
+  }
+
+  /* Difficulty chips */
+  .diff-chip{
+    padding-left:22px; position:relative;
+  }
+  .diff-chip::before{
+    content:""; position:absolute; left:8px; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%; background:currentColor;
+    opacity:.85;
+  }
+  .diff-chip[data-diff="E"]{--c:var(--diff-E)}
+  .diff-chip[data-diff="M"]{--c:var(--diff-M)}
+  .diff-chip[data-diff="H"]{--c:var(--diff-H)}
+  .diff-chip:hover{border-color:var(--c)}
+  .diff-chip.active{
+    background:var(--c); border-color:var(--c); color:#fff;
+  }
+  [data-theme="dark"] .diff-chip.active{color:#0e1014}
+
+  .toggle-chip.active{
+    background:var(--text); color:var(--bg); border-color:var(--text);
+  }
+
+  /* Search input */
+  .search-wrap{
+    position:relative; flex:1 1 240px; min-width:200px; max-width:380px;
+  }
+  .search-wrap input{
+    width:100%; appearance:none;
+    border:1px solid var(--border); background:var(--surface);
+    color:var(--text); font:inherit; font-size:13.5px;
+    padding:7px 32px 7px 12px; border-radius:9px;
+    transition:border-color .15s, box-shadow .15s;
+  }
+  .search-wrap input:focus{
+    outline:none; border-color:var(--accent-2);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent-2) 15%, transparent);
+  }
+  .search-clear{
+    position:absolute; right:6px; top:50%; transform:translateY(-50%);
+    width:22px; height:22px; padding:0; border:none; border-radius:50%;
+    background:transparent; color:var(--muted); cursor:pointer;
+    font-size:15px; line-height:1; display:grid; place-content:center;
+  }
+  .search-clear:hover{background:var(--surface-2); color:var(--text)}
+
+  /* Section select */
+  .section-select{
+    appearance:none; font:inherit; font-size:12.5px; font-weight:600;
+    padding:6px 30px 6px 11px; border-radius:9px; cursor:pointer;
+    border:1px solid var(--border); background-color:var(--surface); color:var(--text);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='none' stroke='%23697386' stroke-width='1.5' stroke-linecap='round' d='M1 1l4 4 4-4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 10px center;
+    min-width:170px;
+  }
+  .section-select:focus{outline:none; border-color:var(--accent-2)}
+
+  /* Filter status */
+  .filter-status{
+    flex:1 1 100%; font-family:var(--mono); font-size:11.5px;
+    color:var(--muted); margin-top:2px;
+    font-variant-numeric:tabular-nums;
+  }
+  .filter-status.has-filters{color:var(--accent-2)}
+
+  /* ---------- Layout ---------- */
+  main{max-width:1000px; margin:0 auto; padding:40px 20px 100px}
+
+  .hero{margin-bottom:34px}
+  .hero h1{
+    font-size:clamp(28px,4.4vw,40px); line-height:1.15;
+    letter-spacing:-.025em; margin:0 0 14px; font-weight:800;
+  }
+  .hero h1 span{
+    background:linear-gradient(120deg,var(--accent),var(--accent-2));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero p{color:var(--muted); font-size:17px; margin:0 0 8px; max-width:66ch}
+
+  .howto{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px 24px; margin:26px 0 40px;
+    box-shadow:var(--shadow);
+  }
+  .howto h2{
+    font-size:13px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--muted); margin:0 0 12px; font-weight:700;
+  }
+  .howto ul{margin:0; padding-left:20px}
+  .howto li{margin:6px 0}
+  .howto b{color:var(--accent-2)}
+  [data-theme="dark"] .howto b{color:var(--accent)}
+  .howto kbd{
+    font-family:var(--mono); font-size:12px;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-bottom-width:2px; padding:1px 6px; border-radius:4px;
+    color:var(--text);
+  }
+
+  /* ---------- Legend ---------- */
+  .legend{
+    display:flex; gap:16px; flex-wrap:wrap; margin:0 0 24px;
+    font-size:13px; color:var(--muted);
+  }
+  .legend span{display:flex; align-items:center; gap:6px}
+  .legend i{
+    width:12px; height:12px; border-radius:3px; display:inline-block;
+  }
+  .lg-E i{background:var(--diff-E)}
+  .lg-M i{background:var(--diff-M)}
+  .lg-H i{background:var(--diff-H)}
+
+  /* ---------- Topic overview cards ---------- */
+  .tier-overview{margin:0 0 44px}
+  .tier-overview h2{
+    font-size:13px; text-transform:uppercase; letter-spacing:.09em;
+    color:var(--muted); margin:0 0 14px; font-weight:700;
+  }
+  .tier-grid{
+    display:grid; gap:10px;
+    grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .topic-card{
+    --topic-color:var(--accent-2);
+    appearance:none; text-align:left; font:inherit; cursor:pointer;
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:12px; padding:14px 16px;
+    box-shadow:var(--shadow); border-left:4px solid var(--topic-color);
+    transition:border-color .15s, transform .12s, background .15s, box-shadow .15s;
+    color:var(--text); position:relative;
+  }
+  .topic-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 10px rgba(16,24,40,.08), 0 12px 28px -14px rgba(16,24,40,.3);
+  }
+  .topic-card:active{transform:translateY(0)}
+  .topic-card[data-topic="1"]{--topic-color:#2b6cb0}
+  .topic-card[data-topic="2"]{--topic-color:#2c7a7b}
+  .topic-card[data-topic="3"]{--topic-color:#2f855a}
+  .topic-card[data-topic="4"]{--topic-color:#6b46c1}
+  .topic-card[data-topic="5"]{--topic-color:#b83280}
+  .topic-card[data-topic="6"]{--topic-color:#c05621}
+  .topic-card[data-topic="7"]{--topic-color:#9b2c2c}
+  .topic-card[data-topic="8"]{--topic-color:#742a2a}
+  .topic-card[data-topic="9"]{--topic-color:#553c9a}
+  .topic-card[data-topic="10"]{--topic-color:#285e61}
+  .topic-card[data-topic="11"]{--topic-color:#4c1d95}
+  .topic-card[data-topic="12"]{--topic-color:#1e40af}
+  .topic-card[data-topic="13"]{--topic-color:#92400e}
+  .topic-card[data-topic="14"]{--topic-color:#065f46}
+  .topic-card[data-topic="15"]{--topic-color:#831843}
+  .topic-card[data-topic="16"]{--topic-color:#111827}
+  [data-theme="dark"] .topic-card[data-topic="16"]{--topic-color:#a0aec0}
+  .topic-card.selected{
+    background:color-mix(in srgb, var(--topic-color) 12%, var(--surface));
+    border-color:var(--topic-color);
+    box-shadow:0 0 0 1px var(--topic-color),
+               0 4px 12px -4px color-mix(in srgb, var(--topic-color) 50%, transparent);
+  }
+  .topic-card .tc-num{
+    font-family:var(--mono); font-size:10.5px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:var(--muted); margin-bottom:5px;
+  }
+  .topic-card h3{
+    margin:0 0 6px; font-size:14px; font-weight:750;
+    letter-spacing:-.012em; line-height:1.3;
+  }
+  .topic-card p{
+    margin:0; font-size:12px; color:var(--muted); line-height:1.5;
+  }
+  .topic-card .tc-pj{
+    display:inline-block; margin-top:8px;
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    color:var(--topic-color); border:1px solid var(--border);
+    background:var(--surface-2);
+    padding:1px 7px; border-radius:5px;
+  }
+
+  /* ---------- Section (Topic) ---------- */
+  .tier{margin-bottom:44px; scroll-margin-top:130px}
+  .tier-head{
+    display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;
+    padding-bottom:12px; margin-bottom:6px;
+    border-bottom:2px solid var(--border);
+  }
+  .tier-badge{
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    color:#fff; padding:4px 9px; border-radius:6px; align-self:center;
+  }
+  .tier-head h2{font-size:21px; margin:0; letter-spacing:-.015em; font-weight:750; flex:1 1 auto}
+  .tier-count{
+    font-family:var(--mono); font-size:12px; color:var(--muted);
+    font-variant-numeric:tabular-nums; align-self:center;
+  }
+  .tier-note{color:var(--muted); font-size:14.5px; margin:12px 0 18px; max-width:74ch}
+
+  /* Section colours */
+  .tier[data-tier="1"]  .tier-badge{background:#2b6cb0}
+  .tier[data-tier="2"]  .tier-badge{background:#2c7a7b}
+  .tier[data-tier="3"]  .tier-badge{background:#2f855a}
+  .tier[data-tier="4"]  .tier-badge{background:#6b46c1}
+  .tier[data-tier="5"]  .tier-badge{background:#b83280}
+  .tier[data-tier="6"]  .tier-badge{background:#c05621}
+  .tier[data-tier="7"]  .tier-badge{background:#9b2c2c}
+  .tier[data-tier="8"]  .tier-badge{background:#742a2a}
+  .tier[data-tier="9"]  .tier-badge{background:#553c9a}
+  .tier[data-tier="10"] .tier-badge{background:#285e61}
+  .tier[data-tier="11"] .tier-badge{background:#4c1d95}
+  .tier[data-tier="12"] .tier-badge{background:#1e40af}
+  .tier[data-tier="13"] .tier-badge{background:#92400e}
+  .tier[data-tier="14"] .tier-badge{background:#065f46}
+  .tier[data-tier="15"] .tier-badge{background:#831843}
+  .tier[data-tier="16"] .tier-badge{background:#111827}
+  [data-theme="dark"] .tier[data-tier="16"] .tier-badge{background:#4a5568}
+
+  /* ---------- Problem card ---------- */
+  .project{
+    background:var(--surface); border:1px solid var(--border);
+    border-radius:var(--radius); padding:14px 18px 14px 16px;
+    margin-bottom:8px; box-shadow:var(--shadow);
+    display:grid; grid-template-columns:auto 1fr; gap:0 14px;
+    transition:border-color .18s, background .18s, opacity .18s, transform .18s;
+  }
+  .project:hover{border-color:color-mix(in srgb,var(--accent-2) 55%, var(--border))}
+
+  .project label{
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; padding-top:2px;
+  }
+  .project input[type="checkbox"]{
+    appearance:none; -webkit-appearance:none;
+    width:22px; height:22px; margin:0; cursor:pointer;
+    border:2px solid var(--border); border-radius:6px;
+    background:var(--surface-2); display:grid; place-content:center;
+    transition:background .15s, border-color .15s; flex:none;
+  }
+  .project input[type="checkbox"]:hover{border-color:var(--accent-2)}
+  .project input[type="checkbox"]::after{
+    content:""; width:11px; height:6px;
+    border-left:2.5px solid #fff; border-bottom:2.5px solid #fff;
+    transform:rotate(-45deg) translate(1px,-1px) scale(0);
+    transition:transform .15s ease;
+  }
+  .project input[type="checkbox"]:checked{background:var(--done); border-color:var(--done)}
+  .project input[type="checkbox"]:checked::after{transform:rotate(-45deg) translate(1px,-1px) scale(1)}
+  .project input[type="checkbox"]:focus-visible{outline:2px solid var(--accent-2); outline-offset:2px}
+
+  .project-body{min-width:0}
+  .project-title{
+    display:flex; align-items:baseline; gap:9px; flex-wrap:wrap;
+    margin:0 0 6px;
+  }
+  .num{
+    font-family:var(--mono); font-size:12px; font-weight:700;
+    color:var(--muted); background:var(--surface-2);
+    border:1px solid var(--border); padding:1px 7px; border-radius:5px;
+    flex:none; font-variant-numeric:tabular-nums;
+  }
+  .project-title h3{
+    margin:0; font-size:16.5px; font-weight:700; letter-spacing:-.01em;
+    transition:color .15s;
+  }
+  .project p{margin:0 0 7px; font-size:14.5px; color:var(--muted); max-width:76ch}
+  .project p:last-child{margin-bottom:0}
+
+  .teaches{
+    font-size:13.5px !important; color:var(--text) !important;
+    background:var(--surface-2); border:1px solid var(--border);
+    border-radius:8px; padding:8px 12px; display:block;
+  }
+  .teaches .k{
+    font-family:var(--mono); font-size:11px; font-weight:700;
+    text-transform:uppercase; letter-spacing:.07em;
+    color:var(--accent-2); margin-right:6px;
+  }
+  [data-theme="dark"] .teaches .k{color:var(--accent)}
+
+  /* ---------- Inline clickable problem title ---------- */
+  .project-link{
+    display:inline-flex; align-items:baseline; gap:9px;
+    text-decoration:none; color:inherit; border-radius:6px;
+    transition:color .15s;
+  }
+  .project-link:hover .num{
+    color:var(--accent-2); border-color:var(--accent-2);
+    background:color-mix(in srgb, var(--accent-2) 10%, var(--surface-2));
+  }
+  .project-link:hover h3{color:var(--accent-2);}
+  [data-theme="dark"] .project-link:hover .num{
+    color:var(--accent); border-color:var(--accent);
+    background:color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+  }
+  [data-theme="dark"] .project-link:hover h3{color:var(--accent);}
+  .project-link:focus-visible{outline:2px solid var(--accent-2); outline-offset:3px;}
+  .project.done .project-link h3{
+    text-decoration:line-through; text-decoration-color:var(--done);
+    text-decoration-thickness:2px;
+  }
+  .project-link .num,
+  .project-link h3{transition:color .15s, background .15s, border-color .15s;}
+
+  /* Difficulty badge */
+  .diff-badge{
+    font-family:var(--mono); font-size:9.5px; font-weight:700;
+    letter-spacing:.08em; text-transform:uppercase;
+    padding:2px 7px; border-radius:5px; align-self:center;
+    border:1px solid; white-space:nowrap;
+  }
+  .diff-badge.E{
+    color:var(--diff-E);
+    background:color-mix(in srgb, var(--diff-E) 12%, transparent);
+    border-color:color-mix(in srgb, var(--diff-E) 40%, transparent);
+  }
+  .diff-badge.M{
+    color:var(--diff-M);
+    background:color-mix(in srgb, var(--diff-M) 12%, transparent);
+    border-color:color-mix(in srgb, var(--diff-M) 40%, transparent);
+  }
+  .diff-badge.H{
+    color:var(--diff-H);
+    background:color-mix(in srgb, var(--diff-H) 12%, transparent);
+    border-color:color-mix(in srgb, var(--diff-H) 40%, transparent);
+  }
+
+  .project.done{opacity:.62; background:var(--surface-2)}
+  .project.done .project-title h3{
+    text-decoration:line-through; text-decoration-color:var(--done);
+    text-decoration-thickness:2px; color:var(--muted);
+  }
+  .project.done .num{color:var(--done); border-color:color-mix(in srgb,var(--done) 40%, var(--border))}
+
+  /* Search highlight */
+  mark{
+    background:color-mix(in srgb, var(--accent) 45%, transparent);
+    color:inherit; padding:0 2px; border-radius:3px;
+    font-weight:600;
+  }
+  [data-theme="dark"] mark{
+    background:color-mix(in srgb, var(--accent) 32%, transparent);
+  }
+
+  /* ---------- Principles block ---------- */
+  .principles{
+    background:linear-gradient(135deg, color-mix(in srgb,var(--accent) 10%, var(--surface)), var(--surface));
+    border:1px solid var(--border); border-radius:var(--radius);
+    padding:22px 24px; margin-bottom:44px; box-shadow:var(--shadow);
+  }
+  .principles h2{
+    margin:0 0 6px; font-size:20px; letter-spacing:-.015em; font-weight:750;
+  }
+  .principles > p.sub{color:var(--muted); font-size:14.5px; margin:0 0 18px}
+  .principles ul{margin:0; padding-left:20px}
+  .principles li{margin:7px 0; font-size:14.5px}
+  .principles li b{color:var(--accent-2)}
+  [data-theme="dark"] .principles li b{color:var(--accent)}
+
+  /* ---------- Empty state ---------- */
+  .empty-state{
+    text-align:center; padding:60px 20px; color:var(--muted);
+    border:2px dashed var(--border); border-radius:var(--radius);
+  }
+  .empty-state strong{display:block; font-size:18px; color:var(--text); margin-bottom:6px}
+  .empty-state button{margin-top:14px}
+
+  /* ---------- Filtered out ---------- */
+  .filtered-out{display:none !important}
+
+  footer{
+    max-width:1000px; margin:0 auto; padding:0 20px 80px;
+    color:var(--muted); font-size:13.5px; text-align:center;
+  }
+
+  .toast{
+    position:fixed; left:50%; bottom:28px; transform:translate(-50%,90px);
+    background:var(--text); color:var(--bg);
+    padding:10px 18px; border-radius:99px; font-size:14px; font-weight:600;
+    opacity:0; pointer-events:none;
+    transition:transform .28s ease, opacity .28s ease; z-index:100;
+    max-width:calc(100vw - 40px); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .toast.show{transform:translate(-50%,0); opacity:1}
+
+  /* ---------- Print ---------- */
+  @media print{
+    :root{
+      --bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb; --shadow:none;
+    }
+    [data-theme="dark"]{
+      --bg:#fff; --surface:#fff; --surface-2:#fff;
+      --text:#000; --muted:#444; --border:#bbb;
+    }
+    body{font-size:11pt; background:#fff}
+    .topbar, .toast, .no-print, .filters, .legend, .tier-overview{display:none !important}
+    main{max-width:none; padding:0}
+    .project{
+      break-inside:avoid; page-break-inside:avoid;
+      box-shadow:none; border-color:#ccc; padding:8px 10px; margin-bottom:6px;
+    }
+    .tier{break-inside:auto; margin-bottom:20px}
+    .tier-head{break-after:avoid; page-break-after:avoid}
+    .project.done{opacity:1}
+    .project input[type="checkbox"]{
+      border-color:#333; background:#fff;
+      print-color-adjust:exact; -webkit-print-color-adjust:exact;
+    }
+    .project input[type="checkbox"]:checked{background:#333; border-color:#333}
+    .howto, .principles{box-shadow:none; border-color:#ccc}
+    .teaches{background:#fafafa}
+    article.project.filtered-out{display:grid !important}
+    section.tier.filtered-out{display:block !important}
+    .empty-state{display:none !important}
+    mark{background:transparent !important; padding:0 !important; font-weight:inherit !important}
+  }
+
+  @media (max-width:560px){
+    .topbar-inner{padding:10px 14px; gap:10px}
+    .brand small{display:none}
+    .filters{padding:0 14px 10px; gap:8px}
+    .filter-group{gap:4px}
+    .chip{font-size:11.5px; padding:4px 9px}
+    .search-wrap{flex-basis:100%; max-width:none}
+    .section-select{min-width:140px}
+    main{padding:26px 14px 80px}
+    .project{padding:13px 14px; gap:0 11px}
+    .hero p{font-size:15.5px}
+    .diff-badge{display:none}
+    .tier-grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="dot"></span>
+      <span>Algorithms Checklist<small>Beginner → Interview · 177 problems · 16 topics</small></span>
+    </div>
+
+    <div class="bar-wrap">
+      <div class="bar" role="progressbar" aria-label="Overall progress"><i id="barFill"></i></div>
+      <span class="bar-label" id="barLabel">0 / 177</span>
+    </div>
+
+    <a class="btn ghost home-link" href="index.html" title="Back to home">← Home</a>
+    <button class="btn ghost no-print" id="themeBtn" title="Toggle theme">🌙 Dark</button>
+    <button class="btn no-print" id="printBtn" title="Print / Save as PDF">⬇ PDF</button>
+    <button class="btn ghost no-print" id="resetBtn" title="Reset all progress">Reset</button>
+  </div>
+
+  <div class="filters no-print">
+    <div class="filter-group">
+      <span class="filter-label">Search</span>
+      <div class="search-wrap">
+        <input type="search" id="searchInput" placeholder="Problem, pattern, topic… (press /)" autocomplete="off">
+        <button class="search-clear" id="searchClear" hidden aria-label="Clear search">×</button>
+      </div>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Difficulty</span>
+      <button class="chip diff-chip" data-diff="E" title="Filter Easy">Easy</button>
+      <button class="chip diff-chip" data-diff="M" title="Filter Medium">Medium</button>
+      <button class="chip diff-chip" data-diff="H" title="Filter Hard">Hard</button>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Topic</span>
+      <select class="section-select" id="sectionSelect" aria-label="Filter by topic">
+        <option value="all">All topics</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <button class="chip toggle-chip" id="hideDoneBtn" title="Hide problems you've marked done">Hide completed</button>
+      <button class="chip reset" id="clearFiltersBtn" title="Clear all filters">↺ Clear filters</button>
+    </div>
+
+    <div class="filter-status" id="filterStatus"></div>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>An <span>Algorithms Interview</span> Checklist</h1>
+    <p>
+      177 problems across 16 topics, from Big-O basics to graph algorithms and Java-flavored
+      design rounds. Solve each one yourself in Java, state its time and space complexity,
+      then note the pattern.
+    </p>
+    <p>
+      Names match common LeetCode-style problems, so they're easy to look up. Tick a box when
+      you can solve it cold. Progress is saved in this browser.
+    </p>
+  </section>
+
+  <section class="howto">
+    <h2>How to use this list</h2>
+    <ul>
+      <li><b>Solve, then check.</b> Attempt each problem on paper or in an editor before looking anything up.</li>
+      <li><b>State complexity out loud.</b> Every problem has a time and space cost — say it before you code.</li>
+      <li><b>Note the pattern.</b> The <em>Approach</em> line under each title tells you the technique — the pattern matters more than the specific problem.</li>
+      <li><b>Filter hard.</b> Click any topic card below to drill into that topic. Combine with difficulty chips and search — they all stack.</li>
+      <li><b>Keyboard shortcuts.</b> Press <kbd>/</kbd> to jump to the search box, <kbd>Esc</kbd> to clear it.</li>
+      <li><b>Export.</b> Hit <b>⬇ PDF</b> — filters are ignored during print, so you get the full list.</li>
+    </ul>
+  </section>
+
+  <div class="legend no-print">
+    <span class="lg-E"><i></i>Easy</span>
+    <span class="lg-M"><i></i>Medium</span>
+    <span class="lg-H"><i></i>Hard</span>
+  </div>
+
+  <!-- ================= TOPIC OVERVIEW ================= -->
+  <section class="tier-overview no-print">
+    <h2>Browse by topic — click a card to filter</h2>
+    <div class="tier-grid" id="topicGrid"></div>
+  </section>
+
+  <div id="app"></div>
+
+  <section class="principles">
+    <h2>Not Problems, But Required</h2>
+    <p class="sub">The habits that actually move the needle in an interview. Treat them as ongoing practice.</p>
+    <ul>
+      <li><b>Explain while you code.</b> Narrate your thinking — interviewers weight communication as heavily as correctness.</li>
+      <li><b>Write clean code under pressure.</b> Sensible names, small methods, no magic numbers.</li>
+      <li><b>Test with edge cases.</b> Empty input, single element, duplicates, overflow, negative numbers.</li>
+      <li><b>Analyze before optimizing.</b> State the brute-force cost first, then improve.</li>
+      <li><b>Re-solve without looking.</b> If you can't reproduce a solution a week later, you haven't learned it.</li>
+      <li><b>Do timed mocks.</b> 45 minutes, one whiteboard, no autocomplete.</li>
+      <li><b>Learn one language deeply.</b> Collections, streams, and quirks of Java — not just syntax.</li>
+    </ul>
+  </section>
+
+  <div class="empty-state" id="emptyState" hidden>
+    <strong>No problems match your filters.</strong>
+    Try a different keyword, or clear some filters.
+    <div><button class="btn" id="clearFiltersBtn2">↺ Clear all filters</button></div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Tick a box when you can solve it cold. Progress is stored locally in your browser only.</p>
+  <p style="opacity:.7; margin-top:8px">177 problems · 16 topics · 3 difficulty levels</p>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var STORAGE_KEY = 'algorithms-checklist-v1';
+  var THEME_KEY   = 'algorithms-checklist-theme-v1';
+  var REPO_URL    = 'https://github.com/vbforge/ask-my-notes';
+
+  /* ---------- Data ---------- */
+  var N = { E: 'Easy', M: 'Medium', H: 'Hard' };
+
+  var DATA = [
+    { name: 'Foundations', note: 'Complexity, recursion and bits come first.', items: [
+      ['Big-O analysis by hand', 'Count operations, compare O(1), O(log n), O(n), O(n log n), O(n²)', 'E'],
+      ['Factorial and Fibonacci', 'Base case, call stack, why naive fib is exponential', 'E'],
+      ['GCD and Fast Power', "Euclid's algorithm, exponentiation by squaring", 'E'],
+      ['Bit Tricks', 'AND/OR/XOR/shifts, power of two, count set bits', 'E'],
+      ['In-place Reverse and Rotate', 'O(1) extra space thinking', 'E']
+    ]},
+    { name: 'Arrays & Strings', note: 'The most common interview category.', items: [
+      ['Two Sum', 'Brute force first, then hash map', 'E'],
+      ['Valid Palindrome', 'Two pointers, skip non-alphanumerics', 'E'],
+      ['Valid Anagram', 'Frequency counting', 'E'],
+      ['Merge Sorted Array', 'Merge from the end', 'E'],
+      ['Remove Duplicates from Sorted Array', 'Read/write pointers', 'E'],
+      ['Move Zeroes', 'In-place stable partition', 'E'],
+      ['Best Time to Buy and Sell Stock', 'Single pass, track minimum', 'E'],
+      ['Longest Common Prefix', 'Vertical scan', 'E'],
+      ['Maximum Subarray (Kadane)', 'Running best, DP in disguise', 'M'],
+      ['Product of Array Except Self', 'Prefix and suffix products', 'M'],
+      ['Rotate Array', 'Reverse trick, modular indexing', 'M'],
+      ['Group Anagrams', 'Canonical key, map of lists', 'M'],
+      ['Container With Most Water', 'Two pointers, greedy move', 'M'],
+      ['3Sum', 'Sort + two pointers, skip duplicates', 'M'],
+      ['String Compression', 'StringBuilder, in-place writes', 'M'],
+      ['Rotate / Spiral Matrix', '2D index bookkeeping', 'M'],
+      ['Set Matrix Zeroes', 'Use first row and column as markers', 'M'],
+      ['Trapping Rain Water', 'Two pointers or prefix maximums', 'H']
+    ]},
+    { name: 'Hashing', note: 'HashMap and HashSet as the default speed-up.', items: [
+      ['Contains Duplicate', 'HashSet', 'E'],
+      ['First Unique Character', 'Counting characters', 'E'],
+      ['Isomorphic Strings / Word Pattern', 'Bijective mapping', 'E'],
+      ['Subarray Sum Equals K', 'Prefix sum + map', 'M'],
+      ['Longest Consecutive Sequence', 'HashSet, O(n)', 'M'],
+      ['Top K Frequent Elements', 'Bucket sort or heap', 'M'],
+      ['Implement HashMap', 'Buckets, collisions, resizing, hashCode/equals', 'M']
+    ]},
+    { name: 'Sliding Window, Intervals, Prefix Sums', note: 'Subarray and range problems.', items: [
+      ['Range Sum Query (Immutable)', 'Prefix sums', 'E'],
+      ['Maximum Average Subarray', 'Fixed window', 'E'],
+      ['Minimum Size Subarray Sum', 'Variable window', 'M'],
+      ['Longest Substring Without Repeating Characters', 'Window + set', 'M'],
+      ['Longest Repeating Character Replacement', 'Window with max frequency', 'M'],
+      ['Permutation in String', 'Fixed window, frequency compare', 'M'],
+      ['Merge Intervals', 'Sort by start, sweep', 'M'],
+      ['Insert Interval', 'Interval overlap logic', 'M'],
+      ['Meeting Rooms I / II', 'Sweep line or min-heap', 'M'],
+      ['Minimum Window Substring', 'Window with need/have counts', 'H'],
+      ['Sliding Window Maximum', 'Monotonic deque', 'H']
+    ]},
+    { name: 'Sorting & Searching', note: 'Know them well enough to write from memory.', items: [
+      ['Bubble, Selection, Insertion Sort', 'Basics, stability, O(n²)', 'E'],
+      ['Binary Search', 'Off-by-one boundaries', 'E'],
+      ['Merge Sort', 'Divide and conquer, stable', 'M'],
+      ['Quick Sort', 'Partitioning, pivot choice, worst case', 'M'],
+      ['Heap Sort', 'Heapify, in-place O(n log n)', 'M'],
+      ['Counting / Radix Sort', 'Non-comparison sorting', 'M'],
+      ['First and Last Position in Sorted Array', 'Lower and upper bound', 'M'],
+      ['Search in Rotated Sorted Array', 'Binary search with a twist', 'M'],
+      ['Find Peak Element', 'Binary search on slope', 'M'],
+      ['Koko Eating Bananas / Sqrt(x)', 'Binary search on the answer', 'M'],
+      ['Kth Largest Element', 'Quickselect vs heap', 'M'],
+      ['Median of Two Sorted Arrays', 'Partition-based binary search', 'H']
+    ]},
+    { name: 'Linked Lists', note: 'Pointer manipulation.', items: [
+      ['Reverse Linked List', 'Iterative and recursive', 'E'],
+      ['Merge Two Sorted Lists', 'Dummy node technique', 'E'],
+      ['Linked List Cycle', "Floyd's fast and slow pointers", 'E'],
+      ['Middle of the Linked List', 'Fast/slow pointers', 'E'],
+      ['Cycle Start Node', 'Floyd phase two', 'M'],
+      ['Remove Nth Node From End', 'Gap between pointers', 'M'],
+      ['Palindrome Linked List', 'Middle + reverse half', 'M'],
+      ['Add Two Numbers', 'Carry handling', 'M'],
+      ['Reorder List', 'Middle, reverse, interleave', 'M'],
+      ['Copy List with Random Pointer', 'Map or interleaving trick', 'M'],
+      ['LRU Cache', 'Doubly linked list + HashMap', 'M']
+    ]},
+    { name: 'Stacks & Queues', note: 'Order, nesting and monotonic patterns.', items: [
+      ['Valid Parentheses', 'Classic stack', 'E'],
+      ['Queue using Two Stacks / Stack using Queues', 'Amortized thinking', 'E'],
+      ['Min Stack', 'Auxiliary stack', 'M'],
+      ['Evaluate Reverse Polish Notation', 'Operand stack', 'M'],
+      ['Daily Temperatures / Next Greater Element', 'Monotonic stack', 'M'],
+      ['Decode String', 'Nested stacks', 'M'],
+      ['Circular Queue', 'Ring buffer', 'M'],
+      ['Largest Rectangle in Histogram', 'Monotonic stack', 'H'],
+      ['Basic Calculator', 'Precedence, parentheses', 'H']
+    ]},
+    { name: 'Recursion & Backtracking', note: 'Explore, choose, undo.', items: [
+      ['Subsets', 'Include/exclude decision tree', 'M'],
+      ['Permutations', 'Used-array backtracking', 'M'],
+      ['Combination Sum', 'Reuse and pruning', 'M'],
+      ['Generate Parentheses', 'Constrained generation', 'M'],
+      ['Letter Combinations of a Phone Number', 'Cartesian product by recursion', 'M'],
+      ['Word Search', 'Grid DFS with visited marks', 'M'],
+      ['Palindrome Partitioning', 'Backtracking + palindrome check', 'M'],
+      ['N-Queens', 'Constraint sets, pruning', 'H'],
+      ['Sudoku Solver', 'Backtracking with validity checks', 'H']
+    ]},
+    { name: 'Trees', note: 'Recursion on structures; BFS and DFS.', items: [
+      ['Tree Traversals (pre/in/post)', 'Recursive and iterative with a stack', 'E'],
+      ['Level Order Traversal', 'BFS with queue', 'E'],
+      ['Maximum / Minimum Depth', 'Recursion basics', 'E'],
+      ['Invert Binary Tree', 'Swap children', 'E'],
+      ['Same Tree / Symmetric Tree', 'Parallel recursion', 'E'],
+      ['Balanced Binary Tree', 'Height with early exit', 'E'],
+      ['Validate BST', 'Range bounds or inorder', 'M'],
+      ['BST Insert / Search / Delete', 'Three delete cases', 'M'],
+      ['Kth Smallest in BST', 'Inorder property', 'M'],
+      ['Lowest Common Ancestor', 'BST and generic versions', 'M'],
+      ['Diameter of Binary Tree', 'Return value vs global answer', 'M'],
+      ['Path Sum I / II / III', 'Root-to-leaf vs any path', 'M'],
+      ['Right Side View', 'BFS levels', 'M'],
+      ['Build Tree from Preorder + Inorder', 'Index map, recursion', 'M'],
+      ['Serialize / Deserialize Binary Tree', 'Encoding structure', 'H'],
+      ['Binary Tree Maximum Path Sum', 'Gain from children', 'H']
+    ]},
+    { name: 'Heaps / Priority Queue', note: 'Top-K and streaming problems.', items: [
+      ['Implement a Min-Heap', 'Sift up, sift down, array layout', 'M'],
+      ['Kth Largest in a Stream', 'Fixed-size heap', 'M'],
+      ['K Closest Points to Origin', 'Heap with comparator', 'M'],
+      ['Top K Frequent Words', 'Heap + tie-breaking', 'M'],
+      ['Merge K Sorted Lists', 'Heap of heads', 'M'],
+      ['Task Scheduler', 'Greedy with counts', 'M'],
+      ['Find Median from Data Stream', 'Two heaps', 'H']
+    ]},
+    { name: 'Graphs', note: 'Traversal, ordering, shortest paths, connectivity.', items: [
+      ['Graph Representations', 'Adjacency list vs matrix, trade-offs', 'E'],
+      ['BFS and DFS', 'Iterative and recursive', 'E'],
+      ['Flood Fill / Max Area of Island', 'Grid DFS', 'E'],
+      ['Number of Islands', 'Connected components on a grid', 'M'],
+      ['Clone Graph', 'DFS with a map of copies', 'M'],
+      ['Course Schedule I / II', 'Topological sort, Kahn and DFS', 'M'],
+      ['Cycle Detection (directed / undirected)', 'Colors vs parent tracking', 'M'],
+      ['Rotting Oranges', 'Multi-source BFS', 'M'],
+      ['Shortest Path in Binary Matrix', 'BFS levels', 'M'],
+      ['Pacific Atlantic Water Flow', 'Reverse search from borders', 'M'],
+      ['Union-Find (DSU)', 'Path compression, union by rank', 'M'],
+      ['Number of Connected Components / Redundant Connection', 'DSU applications', 'M'],
+      ['Dijkstra', 'Priority queue, non-negative weights', 'M'],
+      ['Bellman-Ford', 'Negative edges, relaxations', 'M'],
+      ['Minimum Spanning Tree', 'Kruskal and Prim', 'H'],
+      ['Word Ladder', 'BFS over implicit graph', 'H']
+    ]},
+    { name: 'Dynamic Programming', note: 'State, transition, base case, then optimize space.', items: [
+      ['Climbing Stairs / Fibonacci', 'Memoization vs tabulation', 'E'],
+      ['House Robber I / II', 'Take or skip', 'M'],
+      ['Coin Change I / II', 'Minimum coins vs number of ways', 'M'],
+      ['Unique Paths I / II', 'Grid DP', 'M'],
+      ['Minimum Path Sum', 'Grid DP with costs', 'M'],
+      ['Jump Game I / II', 'DP vs greedy view', 'M'],
+      ['Longest Increasing Subsequence', 'O(n²) then O(n log n)', 'M'],
+      ['Longest Common Subsequence', '2D table', 'M'],
+      ['0/1 Knapsack', 'Classic include/exclude', 'M'],
+      ['Partition Equal Subset Sum', 'Subset-sum DP', 'M'],
+      ['Word Break', 'String DP with dictionary', 'M'],
+      ['Decode Ways', 'Counting DP', 'M'],
+      ['Maximum Product Subarray', 'Track max and min', 'M'],
+      ['Longest Palindromic Substring', 'Expand around center or DP', 'M'],
+      ['Palindromic Substrings', 'Counting variant', 'M'],
+      ['Edit Distance', '2D transitions: insert, delete, replace', 'H'],
+      ['Buy and Sell Stock with Cooldown', 'State machine DP', 'H'],
+      ['Regular Expression Matching', 'Pattern DP', 'H']
+    ]},
+    { name: 'Greedy', note: 'Local choice that stays globally optimal.', items: [
+      ['Assign Cookies', 'Sort and match', 'E'],
+      ['Jump Game', 'Furthest reachable', 'M'],
+      ['Gas Station', 'Running surplus', 'M'],
+      ['Non-overlapping Intervals', 'Sort by end', 'M'],
+      ['Minimum Arrows to Burst Balloons', 'Interval grouping', 'M'],
+      ['Partition Labels', 'Last occurrence', 'M'],
+      ['Huffman Coding', 'Greedy with a heap', 'M'],
+      ['Candy', 'Two-pass scan', 'H']
+    ]},
+    { name: 'Tries & Advanced Structures', note: 'Specialized structures that show depth.', items: [
+      ['Implement Trie', 'Insert, search, prefix', 'M'],
+      ['Design Add and Search Words', 'Trie with wildcard', 'M'],
+      ['Randomized Set O(1)', 'Array + map', 'M'],
+      ['Time-Based Key-Value Store', 'Map + binary search', 'M'],
+      ['Fenwick Tree (BIT)', 'Prefix sums with updates', 'M'],
+      ['Bloom Filter', 'Probabilistic membership', 'M'],
+      ['Word Search II', 'Trie + backtracking', 'H'],
+      ['Segment Tree', 'Range queries and updates', 'H'],
+      ['LFU Cache', 'Frequency buckets, O(1)', 'H'],
+      ['Skip List', 'Probabilistic layered list', 'H']
+    ]},
+    { name: 'Math & Randomness', note: 'Small tricks that appear everywhere.', items: [
+      ['Single Number', 'XOR', 'E'],
+      ['Majority Element', 'Boyer-Moore voting', 'E'],
+      ['Happy Number', 'Cycle detection', 'E'],
+      ['Add Binary / Add Strings', 'Manual big-number addition', 'E'],
+      ['Reverse Integer / Palindrome Number', 'Overflow handling', 'E'],
+      ['Sieve of Eratosthenes', 'Primes up to n', 'E'],
+      ['Counting Bits', 'DP with bit shifts', 'M'],
+      ['Pow(x, n)', 'Fast exponentiation', 'M'],
+      ['Fisher-Yates Shuffle', 'Unbiased shuffling', 'M'],
+      ['Reservoir Sampling', 'Random pick from a stream', 'M']
+    ]},
+    { name: 'Java-Flavored Coding Rounds', note: 'Often asked on top of pure algorithms.', items: [
+      ['Dynamic Array (own ArrayList)', 'Resizing, amortized O(1)', 'E'],
+      ['Immutable Class Design', 'final fields, defensive copies', 'E'],
+      ['Custom Iterator', 'Iterator contract, fail-fast idea', 'M'],
+      ['Thread-safe Singleton and Counter', 'volatile, synchronized, Atomic', 'M'],
+      ['Odd/Even Printing with Two Threads', 'wait/notify, coordination', 'M'],
+      ['Producer-Consumer', 'BlockingQueue and manual version', 'M'],
+      ['Blocking Queue Implementation', 'Locks and conditions', 'M'],
+      ['Rate Limiter', 'Token bucket, sliding window', 'M'],
+      ['Parking Lot / Elevator Design', 'Low-level OOP design', 'M'],
+      ['Dining Philosophers', 'Deadlock avoidance', 'H']
+    ]}
+  ];
+
+  /* ---------- Helpers ---------- */
+  function escHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+  function highlight(text, query) {
+    if (!query) return escHtml(text);
+    var lower = text.toLowerCase();
+    var lq = query.toLowerCase();
+    var result = '';
+    var i = 0;
+    while (i < text.length) {
+      var idx = lower.indexOf(lq, i);
+      if (idx === -1) { result += escHtml(text.slice(i)); break; }
+      result += escHtml(text.slice(i, idx));
+      result += '<mark>' + escHtml(text.slice(idx, idx + lq.length)) + '</mark>';
+      i = idx + lq.length;
+    }
+    return result;
+  }
+
+  /* ---------- State ---------- */
+  function load() {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  var state = load();
+  function persist() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  /* ---------- DOM refs ---------- */
+  var app           = document.getElementById('app');
+  var topicGrid     = document.getElementById('topicGrid');
+  var barFill       = document.getElementById('barFill');
+  var barLabel      = document.getElementById('barLabel');
+  var toastEl       = document.getElementById('toast');
+  var emptyState    = document.getElementById('emptyState');
+  var searchInput   = document.getElementById('searchInput');
+  var searchClear   = document.getElementById('searchClear');
+  var sectionSelect = document.getElementById('sectionSelect');
+  var hideDoneBtn   = document.getElementById('hideDoneBtn');
+  var clearBtn      = document.getElementById('clearFiltersBtn');
+  var clearBtn2     = document.getElementById('clearFiltersBtn2');
+  var filterStatus  = document.getElementById('filterStatus');
+  var diffChips     = [].slice.call(document.querySelectorAll('.diff-chip'));
+
+  var total = 0;
+  var topicCards = [];   // filled after build
+  var activeTopicCard = null; // null = all topics, otherwise section index (0-based)
+
+  /* ---------- Build ---------- */
+  function build() {
+    var globalNum = 0;
+    DATA.forEach(function (sec, si) {
+      /* --- Topic card --- */
+      var card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'topic-card';
+      card.dataset.topic = si + 1;
+      card.dataset.topicIndex = si;
+      card.innerHTML =
+        '<div class="tc-num">Topic ' + (si + 1) + ' · ' + sec.items.length + ' problems</div>' +
+        '<h3>' + escHtml(sec.name) + '</h3>' +
+        '<p>' + escHtml(sec.note) + '</p>' +
+        '<span class="tc-pj">' + sec.items.length + ' problems</span>';
+      topicGrid.appendChild(card);
+
+      /* --- Section --- */
+      var section = document.createElement('section');
+      section.className = 'tier';
+      section.dataset.tier = si + 1;
+      section.dataset.section = si;
+
+      var html = '<div class="tier-head">' +
+        '<span class="tier-badge">Topic ' + (si + 1) + '</span>' +
+        '<h2>' + escHtml(sec.name) + '</h2>' +
+        '<span class="tier-count" data-count></span>' +
+        '</div>' +
+        '<p class="tier-note">' + escHtml(sec.note) + '</p>';
+
+      sec.items.forEach(function (p, pi) {
+        globalNum++;
+        total++;
+        var title = p[0], desc = p[1], diff = p[2];
+        var id  = 's' + si + '-p' + pi;
+        var num = String(globalNum).padStart(3, '0');
+        html +=
+          '<article class="project" data-id="' + id + '" data-diff="' + diff + '" ' +
+          'data-section="' + si + '" ' +
+          'data-title="' + escHtml(title) + '" data-desc="' + escHtml(desc) + '">' +
+            '<label><input type="checkbox" data-id="' + id + '" aria-label="Mark ' + escHtml(title) + ' complete"></label>' +
+            '<div class="project-body">' +
+              '<div class="project-title">' +
+                '<a class="project-link" href="' + REPO_URL + '" target="_blank" rel="noopener" aria-label="Open repository for ' + escHtml(title) + '">' +
+                  '<span class="num">' + num + '</span>' +
+                  '<h3>' + escHtml(title) + '</h3>' +
+                '</a>' +
+                '<span class="diff-badge ' + diff + '">' + N[diff] + '</span>' +
+              '</div>' +
+              '<p class="teaches"><span class="k">Approach</span>' + escHtml(desc) + '</p>' +
+            '</div>' +
+          '</article>';
+      });
+
+      section.innerHTML = html;
+      app.appendChild(section);
+
+      /* --- Section dropdown option --- */
+      var opt = document.createElement('option');
+      opt.value = String(si);
+      opt.textContent = (si + 1) + '. ' + sec.name;
+      sectionSelect.appendChild(opt);
+    });
+
+    barLabel.textContent = '0 / ' + total;
+
+    /* --- Wire topic cards after DOM is built --- */
+    topicCards = [].slice.call(document.querySelectorAll('.topic-card'));
+    topicCards.forEach(function (card) {
+      card.addEventListener('click', function () {
+        var idx = parseInt(card.dataset.topicIndex, 10);
+        if (activeTopicCard === idx) {
+          activeTopicCard = null;
+          card.classList.remove('selected');
+          sectionSelect.value = 'all';
+        } else {
+          activeTopicCard = idx;
+          topicCards.forEach(function (c) { c.classList.remove('selected'); });
+          card.classList.add('selected');
+          sectionSelect.value = String(idx);
+          // Scroll to the section
+          var target = document.querySelector('.tier[data-section="' + idx + '"]');
+          if (target) {
+            setTimeout(function () {
+              target.scrollIntoView({ behavior:'smooth', block:'start' });
+            }, 40);
+          }
+        }
+        applyFilters();
+      });
+    });
+  }
+
+  /* ---------- Apply state ---------- */
+  function applyState() {
+    var done = 0;
+    document.querySelectorAll('.project').forEach(function (card) {
+      var id = card.dataset.id;
+      var cb = card.querySelector('input[type="checkbox"]');
+      var isDone = !!state[id];
+      cb.checked = isDone;
+      card.classList.toggle('done', isDone);
+      if (isDone) done++;
+    });
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    barFill.style.width = pct + '%';
+    barLabel.textContent = done + ' / ' + total + '  (' + pct + '%)';
+    updateSectionCounts();
+  }
+
+  function updateSectionCounts() {
+    document.querySelectorAll('.tier').forEach(function (tier) {
+      var boxes   = tier.querySelectorAll('input[type="checkbox"][data-id]');
+      var checked = tier.querySelectorAll('input[type="checkbox"][data-id]:checked');
+      var label   = tier.querySelector('[data-count]');
+      if (label) label.textContent = checked.length + ' / ' + boxes.length;
+    });
+  }
+
+  /* ---------- Toast ---------- */
+  var toastTimer;
+  function toast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toastEl.classList.remove('show'); }, 1800);
+  }
+
+  /* ---------- Checkbox events ---------- */
+  app.addEventListener('change', function (e) {
+    var cb = e.target.closest('input[type="checkbox"][data-id]');
+    if (!cb) return;
+    var id = cb.dataset.id;
+    if (cb.checked) state[id] = true;
+    else delete state[id];
+    persist();
+
+    var card = cb.closest('.project');
+    if (card) card.classList.toggle('done', cb.checked);
+    updateSectionCounts();
+    updateProgress();
+
+    var name = card ? card.querySelector('h3').textContent : '';
+    toast(cb.checked ? '✓ ' + name : 'Unchecked: ' + name);
+
+    if (hideDoneBtn.classList.contains('active')) applyFilters();
+  });
+
+  function updateProgress() {
+    var done = 0;
+    document.querySelectorAll('.project').forEach(function (card) {
+      if (state[card.dataset.id]) done++;
+    });
+    var pct = total ? Math.round((done / total) * 100) : 0;
+    barFill.style.width = pct + '%';
+    barLabel.textContent = done + ' / ' + total + '  (' + pct + '%)';
+  }
+
+  /* ---------- Filtering ---------- */
+  var activeDiffs = new Set();
+
+  function applyFilters() {
+    var q = searchInput.value.trim();
+    var qLower = q.toLowerCase();
+    var sectionVal = sectionSelect.value;
+    var hideDone = hideDoneBtn.classList.contains('active');
+
+    // Topic card override wins over dropdown
+    if (activeTopicCard !== null) sectionVal = String(activeTopicCard);
+
+    var visible = 0;
+    var anyFilter = q.length > 0 || activeDiffs.size > 0 || sectionVal !== 'all' || hideDone;
+
+    document.querySelectorAll('.tier').forEach(function (tier) {
+      var tierIdx = parseInt(tier.dataset.section, 10);
+      if (sectionVal !== 'all' && parseInt(sectionVal, 10) !== tierIdx) {
+        tier.classList.add('filtered-out');
+        return;
+      }
+
+      var anyInTier = false;
+
+      tier.querySelectorAll('.project').forEach(function (card) {
+        var id   = card.dataset.id;
+        var diff = card.dataset.diff;
+        var title = card.dataset.title;
+        var desc  = card.dataset.desc;
+
+        var show = true;
+        if (activeDiffs.size > 0 && !activeDiffs.has(diff)) show = false;
+        if (show && hideDone && state[id]) show = false;
+        if (show && qLower) {
+          if (title.toLowerCase().indexOf(qLower) === -1 &&
+              desc.toLowerCase().indexOf(qLower) === -1) {
+            show = false;
+          }
+        }
+
+        var titleEl = card.querySelector('.project-title h3');
+        var descEl  = card.querySelector('.teaches');
+
+        if (show) {
+          card.classList.remove('filtered-out');
+          anyInTier = true;
+          visible++;
+          titleEl.innerHTML = highlight(title, qLower);
+          descEl.innerHTML  = '<span class="k">Approach</span>' + highlight(desc, qLower);
+        } else {
+          card.classList.add('filtered-out');
+          titleEl.textContent = title;
+          descEl.innerHTML = '<span class="k">Approach</span>' + escHtml(desc);
+        }
+      });
+
+      tier.classList.toggle('filtered-out', !anyInTier);
+    });
+
+    if (anyFilter) {
+      filterStatus.textContent = 'Showing ' + visible + ' of ' + total + ' problems';
+      filterStatus.classList.add('has-filters');
+    } else {
+      filterStatus.textContent = '';
+      filterStatus.classList.remove('has-filters');
+    }
+
+    emptyState.hidden = visible > 0;
+    searchClear.hidden = q.length === 0;
+  }
+
+  /* ---------- Search events ---------- */
+  searchInput.addEventListener('input', applyFilters);
+  searchInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      searchInput.value = '';
+      applyFilters();
+      searchInput.blur();
+    }
+  });
+  searchClear.addEventListener('click', function () {
+    searchInput.value = '';
+    applyFilters();
+    searchInput.focus();
+  });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/' && document.activeElement !== searchInput &&
+        !/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) {
+      e.preventDefault();
+      searchInput.focus();
+      searchInput.select();
+    }
+  });
+
+  /* ---------- Difficulty chips ---------- */
+  diffChips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var d = chip.dataset.diff;
+      if (activeDiffs.has(d)) {
+        activeDiffs.delete(d);
+        chip.classList.remove('active');
+      } else {
+        activeDiffs.add(d);
+        chip.classList.add('active');
+      }
+      applyFilters();
+    });
+  });
+
+  /* ---------- Section dropdown ---------- */
+  sectionSelect.addEventListener('change', function () {
+    if (sectionSelect.value === 'all') {
+      activeTopicCard = null;
+      topicCards.forEach(function (c) { c.classList.remove('selected'); });
+    } else {
+      activeTopicCard = parseInt(sectionSelect.value, 10);
+      topicCards.forEach(function (c) {
+        c.classList.toggle('selected', parseInt(c.dataset.topicIndex, 10) === activeTopicCard);
+      });
+    }
+    applyFilters();
+  });
+
+  /* ---------- Hide completed ---------- */
+  hideDoneBtn.addEventListener('click', function () {
+    hideDoneBtn.classList.toggle('active');
+    applyFilters();
+  });
+
+  /* ---------- Clear filters ---------- */
+  function clearFilters() {
+    searchInput.value = '';
+    activeDiffs.clear();
+    diffChips.forEach(function (c) { c.classList.remove('active'); });
+    sectionSelect.value = 'all';
+    hideDoneBtn.classList.remove('active');
+    activeTopicCard = null;
+    topicCards.forEach(function (c) { c.classList.remove('selected'); });
+    applyFilters();
+  }
+  clearBtn.addEventListener('click', clearFilters);
+  if (clearBtn2) clearBtn2.addEventListener('click', clearFilters);
+
+  /* ---------- Reset progress ---------- */
+  document.getElementById('resetBtn').addEventListener('click', function () {
+    if (!confirm('Reset all progress? This cannot be undone.')) return;
+    state = {};
+    persist();
+    applyState();
+    updateProgress();
+    toast('Progress reset');
+  });
+
+  /* ---------- Print ---------- */
+  document.getElementById('printBtn').addEventListener('click', function () {
+    window.print();
+  });
+
+  /* ---------- Theme ---------- */
+  var themeBtn = document.getElementById('themeBtn');
+  function setTheme(t) {
+    document.documentElement.setAttribute('data-theme', t);
+    themeBtn.textContent = t === 'dark' ? '☀️ Light' : '🌙 Dark';
+    try { localStorage.setItem(THEME_KEY, t); } catch (e) {}
+  }
+  var saved;
+  try { saved = localStorage.getItem(THEME_KEY); } catch (e) { saved = null; }
+  if (!saved) {
+    saved = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
+  setTheme(saved);
+  themeBtn.addEventListener('click', function () {
+    setTheme(document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---------- Init ---------- */
+  build();
+  applyState();
+  applyFilters();
+})();
+</script>
+</body>
+</html>
